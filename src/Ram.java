@@ -1,2 +1,2 @@
-public class Ram {
+public class Ram extends Piece {
 }

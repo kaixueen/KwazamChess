@@ -1,2 +1,2 @@
-public class Sau {
+public class Sau extends Piece {
 }

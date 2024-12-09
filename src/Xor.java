@@ -1,2 +1,2 @@
-public class Xor {
+public class Xor extends Piece {
 }

@@ -1,2 +1,2 @@
-public class Tor {
+public class Tor extends Piece{
 }
