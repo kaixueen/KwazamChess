@@ -3,8 +3,6 @@ import java.awt.*;
 
 // Manage game GUI (board, pieces)
 public class GameView {
-    final int ROWS = 8;
-    final int COLUMNS = 5;
     final int headerHeight = 70;
     final int resultHeight = 70;
     final int boardWidth = 800;
@@ -17,7 +15,7 @@ public class GameView {
     JPanel boardPanel = new JPanel();
     JPanel resultPanel = new JPanel();
 
-    JButton[][] board = new JButton[ROWS][COLUMNS];
+    JButton[][] board = new JButton[GameBoard.ROWS][GameBoard.COLUMNS];
 
     GameView() {
         frame.setVisible(true);
@@ -47,15 +45,15 @@ public class GameView {
         frame.add(centerPanel, BorderLayout.CENTER);
 
         // Board Panel
-        boardPanel.setLayout(new GridLayout(ROWS, COLUMNS, 1, 1));
-        int buttonSize = 640 / ROWS; // Ensure buttons are square
-        boardPanel.setPreferredSize(new Dimension(buttonSize * COLUMNS - COLUMNS, buttonSize * ROWS - ROWS));
+        boardPanel.setLayout(new GridLayout(GameBoard.ROWS, GameBoard.COLUMNS, 1, 1));
+        int buttonSize = 640 / GameBoard.ROWS; // Ensure buttons are square
+        boardPanel.setPreferredSize(new Dimension(buttonSize * GameBoard.COLUMNS - GameBoard.COLUMNS, buttonSize * GameBoard.ROWS - GameBoard.ROWS));
         boardPanel.setBackground(Color.BLACK);
         centerPanel.add(boardPanel, BorderLayout.CENTER);
         centerPanel.setBackground(Color.darkGray);
 
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
+        for (int r = 0; r < GameBoard.ROWS; r++) {
+            for (int c = 0; c < GameBoard.COLUMNS; c++) {
                 JButton square = new JButton();
                 square.setPreferredSize(new Dimension(buttonSize, buttonSize));
                 if ((r + c) % 2 == 0) {
