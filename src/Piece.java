@@ -29,7 +29,7 @@ public class Piece {
     }
 
     // Determine if a piece can move to a certain position
-    public boolean canMove(GameBoard board, int toX, int toY) {
+    public boolean isValidMove(GameBoard board, int toX, int toY) {
         return false;
     }
 
