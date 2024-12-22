@@ -1,19 +1,20 @@
 package Model;
 
 // Abstract class for all pieces
-public class Piece {
+public abstract class Piece {
     private String color;
     private String type;
     // private Move moves[];
-    private int positionX;
-    private int positionY;
+    private Position position;
+    private boolean isMovingForward; // Only for Ram
+    private boolean isTransformable; // Only for Tor and Xor
 
     // Constructor
-    public Piece(String color, String type, int positionX, int positionY) {
+    public Piece(String color, String type, Position position) {
         this.color = color;
         this.type = type;
-        this.positionX = positionX;
-        this.positionY = positionY;
+        this.position = position;
+        isMovingForward = true;
     }
 
     // Getter methods
@@ -23,17 +24,12 @@ public class Piece {
     public String getType() {
         return type;
     }
-    public int getPositionX() {
-        return positionX;
-    }
-    public int getPositionY() {
-        return positionY;
+    public Position getPosition() {
+        return position;
     }
 
     // Determine if a piece can move to a certain position
-    public boolean isValidMove(GameBoard board, int toX, int toY) {
-        return false;
-    }
+    public abstract boolean isValidMove(GameBoard board, Position to);
 
     // Return a string representation of the piece
     public String toString() {
@@ -48,5 +44,19 @@ public class Piece {
     // Capture a piece
     public void capture(Piece piece) {
         return;
+    }
+
+    public void setMovingForward(boolean isMovingForward) {
+        this.isMovingForward = isMovingForward;
+    }
+    public boolean isMovingForward() {
+        return isMovingForward;
+    }
+
+    public void setTransformable(boolean isTransformable) {
+        this.isTransformable = isTransformable;
+    }
+    public boolean isTransformable() {
+        return isTransformable;
     }
 }

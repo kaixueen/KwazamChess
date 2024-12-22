@@ -1,12 +1,29 @@
 package Model;
 
 public class Xor extends Piece {
-    public Xor(String color, int x, int y) {
-        super(color, "Model.Xor", x, y);
+    public Xor(String color, Position position) {
+        super(color, "Xor", position);
     }
 
     @Override
-    public boolean isValidMove(GameBoard board, int toX, int toY) {
+    public boolean isValidMove(GameBoard board, Position to) {
+        int fromX = getPosition().getX();
+        int fromY = getPosition().getY();
+        int toX = to.getX();
+        int toY = to.getY();
+        int dx = Math.abs(toX - fromX);
+        int dy = Math.abs(toY - fromY);
+        String currentColor = getColor();
+
+        // Ensure orthogonal move
+        if (!board.isDiagonalPathBlocked(getPosition(), to) && (dx == dy) && (dx != 0 && dy != 0)) {
+            // Ensure the destination position is empty or contains an opponent's piece
+            if (board.isEmpty(toX, toY)) {
+                return true;
+            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(toX, toY).getColor().equals(currentColor)) {
+                return true;
+            }
+        }
         return false;
     }
 }

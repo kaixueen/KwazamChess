@@ -1,52 +1,30 @@
 package Model;
 
 public class Ram extends Piece {
-    public Ram(String color, int x, int y) {
-        super(color, "Model.Ram", x, y);
+    public Ram(String color, Position position) {
+        super(color, "Ram", position);
     }
 
     @Override
-    public boolean isValidMove(GameBoard board, int toX, int toY) {
-        int fromX = getPositionX();
-        int currentY = getPositionY();
+    public boolean isValidMove(GameBoard board, Position to) {
+        int fromX = getPosition().getX();
+        int fromY = getPosition().getY();
+        int toX = to.getX();
+        int toY = to.getY();
         String currentColor = getColor();
-        int step = toX-fromX;
-
-        //Check if it's the same location.
-        if (fromX == toX && currentY == toY){
-            return false;
+        if (fromY == 0 || fromY == board.ROWS - 1) {
+            setMovingForward(!isMovingForward());
         }
 
-        if (currentColor == "red"){
-            if(fromX == 7){
-                if (step == -1 || currentY == toY) {
-                    move(toX, toY);
-                    return true;
-                }
-            }
-            if (step == 1 || currentY == toY){
-                move(toX, toY);
+        // Ensure the vertical distance between the two positions is 1
+        if ((toY - fromY == 1 && toX == fromX && isMovingForward()) ||
+                (toY - fromY == -1 && toX == fromX && !isMovingForward())) {
+            // Ensure the destination position is empty or contains an opponent's piece
+            if (board.isEmpty(toX, toY)) {
+                return true;
+            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(toX, toY).getColor().equals(currentColor)) {
                 return true;
             }
-
-            //Capture not done yet
-
-        }
-
-        if (currentColor == "blue"){
-            if(fromX == 7){
-                if (step == 1 || currentY == toY) {
-                    move(toX, toY);
-                    return true;
-                }
-            }
-            if (step == -1 || currentY == toY){
-                move(toX, toY);
-                return true;
-            }
-
-            //Capture not done yet
-
         }
         return false;
     }

@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.GameController;
+import View.GameView;
 
 // Manage game logic
 public class Game {

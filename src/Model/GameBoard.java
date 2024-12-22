@@ -1,5 +1,9 @@
 package Model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 // Manage game board
 public class GameBoard {
     public static final int ROWS = 8;
@@ -169,8 +173,72 @@ public class GameBoard {
         return isGameOver;
     }
 
+    // Switch turns between players
     public void switchTurn() {
         currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
         currentTurn++;
+    }
+
+    // List all valid moves for a piece
+    public ArrayList<Position> getValidMoves(Piece piece) {
+        ArrayList<Position> validMoves = new ArrayList<>();
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (isInBounds(col, row) && piece.isValidMove(this, new Position(col, row))) {
+                    // Add to list of valid moves
+                    validMoves.add(new Position(col, row));
+                }
+            }
+        }
+        return validMoves;
+    }
+
+    public boolean isStraightPathBlocked(Position from, Position to) {
+        int fromX = from.getX();
+        int fromY = from.getY();
+        int toX = to.getX();
+        int toY = to.getY();
+
+        // Horizontal movement (same row)
+        if (fromY == toY) {
+            int step = (toX > fromX) ? 1 : -1; // Determine direction
+            for (int x = fromX + step; x != toX; x += step) {
+                if (!isEmpty(x, fromY)) {
+                    return true; // Path is blocked
+                }
+            }
+        }
+        // Vertical movement (same column)
+        else if (fromX == toX) {
+            int step = (toY > fromY) ? 1 : -1; // Determine direction
+            for (int y = fromY + step; y != toY; y += step) {
+                if (!isEmpty(fromX, y)) {
+                    return true; // Path is blocked
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isDiagonalPathBlocked(Position from, Position to) {
+        int fromX = from.getX();
+        int fromY = from.getY();
+        int toX = to.getX();
+        int toY = to.getY();
+
+        int stepX = (toX > fromX) ? 1 : -1; // Determine horizontal direction
+        int stepY = (toY > fromY) ? 1 : -1; // Determine vertical direction
+
+        int x = fromX + stepX;
+        int y = fromY + stepY;
+
+        while (x != toX && y != toY) {
+            if (!isEmpty(x, y)) {
+                return true; // Path is blocked
+            }
+            x += stepX;
+            y += stepY;
+        }
+        return false;
     }
 }
