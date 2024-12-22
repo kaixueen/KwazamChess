@@ -6,9 +6,9 @@ import java.awt.event.MouseEvent;
 
 public class GameController {
     private GameView gameView;
-    private Game gameModel;
+    private GameBoard gameModel;
 
-    public GameController(GameView gameView, Game gameModel) {
+    public GameController(GameView gameView, GameBoard gameModel) {
         this.gameView = gameView;
         this.gameModel = gameModel;
 
@@ -45,6 +45,11 @@ public class GameController {
                 gameView.showInvalidMoveMessage();
             }
         }
+    }
+
+    private void transformPieceAt(int x, int y) {
+        gameModel.transformPieceAt(x, y);
+        gameView.updateBoard(gameModel.getGameBoard());
     }
 }
 
