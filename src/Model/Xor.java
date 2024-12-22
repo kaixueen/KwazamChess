@@ -1,6 +1,8 @@
+package Model;
+
 public class Xor extends Piece {
     public Xor(String color, int x, int y) {
-        super(color, "Xor", x, y);
+        super(color, "Model.Xor", x, y);
     }
 
     @Override

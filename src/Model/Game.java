@@ -1,3 +1,7 @@
+package Model;
+
+import Controller.GameController;
+
 // Manage game logic
 public class Game {
     private GameBoard gameBoard;

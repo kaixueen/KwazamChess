@@ -1,6 +1,8 @@
+package Model;
+
 public class Ram extends Piece {
     public Ram(String color, int x, int y) {
-        super(color, "Ram", x, y);
+        super(color, "Model.Ram", x, y);
     }
 
     @Override

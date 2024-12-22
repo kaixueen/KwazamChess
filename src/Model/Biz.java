@@ -1,6 +1,8 @@
+package Model;
+
 public class Biz extends Piece {
     public Biz(String color, int x, int y) {
-        super(color, "Biz", x, y);
+        super(color, "Model.Biz", x, y);
     }
 
     @Override

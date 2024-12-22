@@ -1,4 +1,6 @@
-// Position class to hold the x and y coordinates of a point
+package Model;
+
+// Model.Position class to hold the x and y coordinates of a point
 public class Position {
     private int x;
     private int y;

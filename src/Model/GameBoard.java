@@ -1,3 +1,5 @@
+package Model;
+
 // Manage game board
 public class GameBoard {
     public static final int ROWS = 8;
@@ -98,19 +100,19 @@ public class GameBoard {
         }
     }
 
-    // Tranform Tor and Xor pieces
+    // Tranform Model.Tor and Model.Xor pieces
     public void transformPieceAt(int x, int y) {
         if (isInBounds(x, y)) {
             Piece piece = getPieceAt(x, y);
-            if (piece.getType().equals("Tor")) {
-                board[y][x] = factory.createPiece("Xor", piece.getColor(), x, y);
-            } else if (piece.getType().equals("Xor")) {
-                board[y][x] = factory.createPiece("Tor", piece.getColor(), x, y);
+            if (piece.getType().equals("Model.Tor")) {
+                board[y][x] = factory.createPiece("Model.Xor", piece.getColor(), x, y);
+            } else if (piece.getType().equals("Model.Xor")) {
+                board[y][x] = factory.createPiece("Model.Tor", piece.getColor(), x, y);
             }
         }
     }
 
-    // Keep track of Sau piece position
+    // Keep track of Model.Sau piece position
     public void setSauPosition(Position position, String color) {
         if (color.equals("RED")) {
             redSauPosition = position;
@@ -122,7 +124,7 @@ public class GameBoard {
         return color.equals("RED") ? redSauPosition : blueSauPosition;
     }
 
-    // Check if the Sau piece has been captured
+    // Check if the Model.Sau piece has been captured
     public boolean isSauCaptured(String color) {
         int x, y;
         if (color.equals("RED")) {

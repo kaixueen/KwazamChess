@@ -1,7 +1,7 @@
+package View;
+
 import java.awt.*;
 import javax.swing.*;
-import java.io.*;
-import java.awt.event.*;
 import java.io.*;
 
 // Manage game GUI (board, pieces)
@@ -18,11 +18,11 @@ public class GameView {
     private JPanel boardPanel = new JPanel();
     private JPanel footerPanel = new JPanel(new BorderLayout());
     private JPanel menuWrapper = new JPanel(new BorderLayout());
-    private String[] options = { "Save Game", "Load Game", "Restart" };
+    private String[] options = { "Save Model.Game", "Load Model.Game", "Restart" };
     private JButton menu;
     private JLabel turnLabel;
     private JButton[][] board = new JButton[8][5];
-    private static String ICONPATH="src/img/";
+    private static String ICONPATH="src/Images/";
 
     // Font setup
     private Font titleFont = new Font("Lucida Calligraphy", Font.BOLD, 50);
@@ -208,10 +208,10 @@ public class GameView {
                 options[0]);
 
         if (response == 0) {
-            // Save Game
+            // Save Model.Game
             saveGame();
         } else if (response == 1) {
-            // Load Game
+            // Load Model.Game
             loadGame();
         } else if (response == 2) {
             // Restart
@@ -253,7 +253,7 @@ public class GameView {
                 }
                 writer.println();
             }
-            JOptionPane.showMessageDialog(frame, "Game saved successfully!");
+            JOptionPane.showMessageDialog(frame, "Model.Game saved successfully!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Erroe saving game: " + e.getMessage());
         }
@@ -301,7 +301,7 @@ public class GameView {
                     }
                 }
             }
-            JOptionPane.showMessageDialog(frame, "Game loaded successfully!");
+            JOptionPane.showMessageDialog(frame, "Model.Game loaded successfully!");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, "Error loading game: " + e.getMessage());
         }

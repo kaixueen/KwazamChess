@@ -1,6 +1,8 @@
+package Model;
+
 public class Sau extends Piece {
     public Sau(String color, int x, int y) {
-        super(color, "Sau", x, y);
+        super(color, "Model.Sau", x, y);
     }
 
     @Override

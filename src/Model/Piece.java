@@ -1,3 +1,5 @@
+package Model;
+
 // Abstract class for all pieces
 public class Piece {
     private String color;

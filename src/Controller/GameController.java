@@ -1,6 +1,7 @@
-// Process user input and manage game states
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+package Controller;// Process user input and manage game states
+
+import Model.*;
+import View.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
