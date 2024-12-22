@@ -7,6 +7,11 @@ public class GameBoard {
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
     private String winner;
+
+    private int currentTurn;
+    private String currentPlayer;
+    private boolean isGameOver;
+    private String player1, player2;
     
     private Piece[][] board;
 
@@ -18,6 +23,10 @@ public class GameBoard {
         redSauPosition = new Position(2, 0);
         blueSauPosition = new Position(2, ROWS - 1);
         winner = "";
+        currentTurn = 0;
+        currentPlayer = player1 = "RED";
+        player2 = "BLUE";
+        isGameOver = false;
     }
     
     public void initializeBoard() {
@@ -62,6 +71,11 @@ public class GameBoard {
 
     public void removePieceAt(int x, int y) {
         if (isInBounds(x, y)) {
+            if (board[y][x].getColor().equals("RED")) {
+                remainingRedPieces--;
+            } else {
+                remainingBluePieces--;
+            }
             board[y][x] = null;
         }
     }
@@ -75,8 +89,8 @@ public class GameBoard {
         }
     }
 
+    // Reset board with empty pieces
     public void resetBoard() {
-        // Reset board with empty pieces
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 board[row][col] = null;
@@ -91,7 +105,7 @@ public class GameBoard {
             if (piece.getType().equals("Tor")) {
                 board[y][x] = factory.createPiece("Xor", piece.getColor(), x, y);
             } else if (piece.getType().equals("Xor")) {
-                board[y][x] = factory.createPiece("Xor", piece.getColor(), x, y);
+                board[y][x] = factory.createPiece("Tor", piece.getColor(), x, y);
             }
         }
     }
@@ -129,6 +143,32 @@ public class GameBoard {
     // Load board state from a file
 
     public String determineWinConditions() {
-        if ()
+        isGameOver = true;
+        if (currentTurn >= TURN_LIMIT) {
+            if (remainingRedPieces > remainingBluePieces) {
+                return "RED";
+            } else if (remainingBluePieces > remainingRedPieces) {
+                return "BLUE";
+            } else {
+                return "DRAW";
+            }
+        }
+        if (isSauCaptured("RED")) {
+            return "BLUE";
+        } else if (isSauCaptured("BLUE")) {
+            return "RED";
+        }
+
+        isGameOver = false;
+        return "";
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public void switchTurn() {
+        currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
+        currentTurn++;
     }
 }
