@@ -108,10 +108,10 @@ public class GameBoard {
     public void transformPieceAt(int x, int y) {
         if (isInBounds(x, y)) {
             Piece piece = getPieceAt(x, y);
-            if (piece.getType().equals("Model.Tor")) {
-                board[y][x] = factory.createPiece("Model.Xor", piece.getColor(), x, y);
-            } else if (piece.getType().equals("Model.Xor")) {
-                board[y][x] = factory.createPiece("Model.Tor", piece.getColor(), x, y);
+            if (piece.getType().equals("Tor")) {
+                board[y][x] = factory.createPiece("Xor", piece.getColor(), x, y);
+            } else if (piece.getType().equals("Xor")) {
+                board[y][x] = factory.createPiece("Tor", piece.getColor(), x, y);
             }
         }
     }
@@ -145,8 +145,34 @@ public class GameBoard {
         winner = w;
     }
 
-    // Save board state to a file
+    // Save board state as a 2D String array
+    public String[][] saveBoardState() {
+        String[][] boardState = new String[ROWS][COLUMNS];
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (isEmpty(col, row)) {
+                    boardState[row][col] = "";
+                } else {
+                    // Store piece as RRAM, BSAU, etc.
+                    boardState[row][col] = board[row][col].getColor().charAt(0) + board[row][col].getType();
+                }
+            }
+        }
+        return boardState;
+    }
     // Load board state from a file
+    public void loadBoardState(String[][] boardState) {
+        resetBoard();
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (!boardState[row][col].equals("")) {
+                    String color = boardState[row][col].substring(0, 1).equals("R") ? "RED" : "BLUE";
+                    String type = boardState[row][col].substring(1);
+                    board[row][col] = factory.createPiece(type, color, col, row);
+                }
+            }
+        }
+    }
 
     public String determineWinConditions() {
         isGameOver = true;

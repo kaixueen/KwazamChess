@@ -1,3 +1,12 @@
+// Todo:
+// 1. Add flip board feature
+// 2. Add effect when a piece is chosen, e.g. highlight the piece
+// 3. Add effect to show all the moves that a piece can make, e.g. change the valid position background color
+// 4. Maybe enhance a bit menu interface?
+// 5. Some effects or message when the game is over (red win/blue win/draw)
+// 6. Add a Restart button when the game is over
+// 7. Add removePiece() method to remove a piece from the board
+// 8. Add addPiece() method to add a piece to the board
 package View;
 
 import java.awt.*;
@@ -255,7 +264,7 @@ public class GameView {
             }
             JOptionPane.showMessageDialog(frame, "Model.Game saved successfully!");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(frame, "Erroe saving game: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Error saving game: " + e.getMessage());
         }
     }
 
