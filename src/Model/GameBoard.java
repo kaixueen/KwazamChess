@@ -30,8 +30,8 @@ public class GameBoard {
         blueSauPosition = new Position(2, ROWS - 1);
         winner = "";
         currentTurn = 0;
-        currentPlayer = player1 = "RED";
-        player2 = "BLUE";
+        currentPlayer = player1 = "BLUE";
+        player2 = "RED";
         isGameOver = false;
     }
     
