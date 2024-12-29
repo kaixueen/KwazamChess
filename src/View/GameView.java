@@ -10,10 +10,14 @@
 // 9. Add a surrender button?
 package View;
 
+import Controller.GameController;
+import Model.Position;
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -26,6 +30,8 @@ public class GameView {
     final int boardHeight = 800;
     final Color blueTurnHover = new Color(64, 223, 239);
     final Color redTurnHover = new Color(231, 142, 169);
+    final Color redTurnPossibleMove = new Color(243, 158, 96);
+    final Color blueTurnPossibleMove = new Color(205, 193, 255);
 
     private JFrame frame = new JFrame("Kwazam Chess");
     private JLabel textLabel = new JLabel();
@@ -246,7 +252,11 @@ public class GameView {
 //        }
     }
 
-    public void movePiece(int fromX, int fromY, int toX, int toY) {
+    public void movePiece(Position from, Position to) {
+        int fromX = from.getX();
+        int fromY = from.getY();
+        int toX = to.getX();
+        int toY = to.getY();
         JButton fromSquare = board[fromY][fromX];
         JButton toSquare = board[toY][toX];
         toSquare.setIcon(fromSquare.getIcon());
@@ -259,8 +269,6 @@ public class GameView {
     public void removePiece(int x, int y) {
         board[y][x].setIcon(null);
     }
-
-
 
     public void flipBoard() {
         boardPanel.removeAll(); // Clear the board panel
@@ -417,12 +425,16 @@ public class GameView {
         gameOverDialog.setVisible(true);
     }
 
-    public void pieceOnHover(int x, int y, String player) {
+    public void pieceOnHover(Position position, String player) {
+        int x = position.getX();
+        int y = position.getY();
         JButton square = board[y][x];
         Color hoverColor = player.equals("RED") ? redTurnHover : blueTurnHover;
         square.setBackground(hoverColor);
     }
-    public void pieceOffHover(int x, int y) {
+    public void pieceOffHover(Position position) {
+        int x = position.getX();
+        int y = position.getY();
         JButton square = board[y][x];
         if ((x + y) % 2 == 0) {
             square.setBackground(new Color(236, 235, 222));
@@ -430,7 +442,9 @@ public class GameView {
             square.setBackground(new Color(168, 205, 137));
         }
     }
-    public void pieceOnClick(int x, int y) {
+    public void pieceOnClick(Position position) {
+        int x = position.getX();
+        int y = position.getY();
         JButton square = board[y][x];
 
         // Check if there's a previously enlarged button
@@ -483,5 +497,64 @@ public class GameView {
 
     public void addRestartListener(ActionListener listener) {
         restartButton.addActionListener(listener);
+    }
+
+    public Position findButtonPosition(JButton btn) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (board[i][j] == btn) {
+                    return new Position(j, i);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void highlightPossibleMoves(ArrayList<Position> possibleMoves, String player) {
+        for (Position pos : possibleMoves) {
+            int x = pos.getX();
+            int y = pos.getY();
+            JButton square = board[y][x];
+            Color possibleMoveColor = player.equals("RED") ? redTurnPossibleMove : blueTurnPossibleMove;
+            square.setBackground(possibleMoveColor);
+        }
+    }
+    public void unhighlightPossibleMoves(ArrayList<Position> possibleMoves) {
+        for (Position pos : possibleMoves) {
+            int x = pos.getX();
+            int y = pos.getY();
+            JButton square = board[y][x];
+            if ((x + y) % 2 == 0) {
+                square.setBackground(new Color(236, 235, 222));
+            } else {
+                square.setBackground(new Color(168, 205, 137));
+            }
+        }
+    }
+
+    public void addMoveListener(ArrayList<Position> positions, MouseAdapter newListener) {
+        for (Position position : positions) {
+            int x = position.getX();
+            int y = position.getY();
+            JButton button = board[y][x];
+
+            // Remove all MoveListener instances
+            for (MouseListener listener : button.getMouseListeners()) {
+                button.removeMouseListener(listener);
+            }
+
+            // Add the new listener
+            button.addMouseListener(newListener);
+        }
+    }
+
+
+    public void removeMoveListener(ArrayList<Position> positions, MouseAdapter oriListener) {
+        for (Position position : positions) {
+            int x = position.getX();
+            int y = position.getY();
+            board[y][x].removeMouseListener(board[y][x].getMouseListeners()[0]);
+            board[y][x].addMouseListener(oriListener);
+        }
     }
 }

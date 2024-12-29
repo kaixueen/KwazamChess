@@ -59,15 +59,24 @@ public class GameBoard {
         return board;
     }
 
+    public String getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public boolean isEmpty(int x, int y) {
-        return getPieceAt(x, y) == null;
+        if (!isInBounds(x, y)) {
+            return false; // Out of bounds
+        }
+        return board[y][x] == null;
     }
 
     public boolean isInBounds(int x, int y) {
         return y >= 0 && y < ROWS && x >= 0 && x < COLUMNS;
     }
 
-    public Piece getPieceAt(int x, int y) {
+    public Piece getPieceAt(Position position) {
+        int x = position.getX();
+        int y = position.getY();
         if (isInBounds(x, y) && !isEmpty(x, y)) {
             Piece piece = board[y][x];
             return piece;
@@ -86,12 +95,32 @@ public class GameBoard {
         }
     }
 
-    public void movePieceTo(int fromX, int fromY, int toX, int toY) {
+    public void movePieceTo(Position from, Position to) {
+        int fromX = from.getX();
+        int fromY = from.getY();
+        int toX = to.getX();
+        int toY = to.getY();
         if (isInBounds(fromX, fromY) && isInBounds(toX, toY)) {
-            Piece piece = getPieceAt(fromX, fromY);
+            Piece piece = getPieceAt(from);
             if (isEmpty(toX, toY) && piece != null) {
+                board[fromY][fromX] = null;
                 board[toY][toX] = piece;
+                piece.setPosition(to);
+                if (piece.getType().equals("SAU")) {
+                    setSauPosition(to, piece.getColor());
+                }
             }
+        }
+    }
+
+    public void capturePiece(Position from, Position to) {
+        int fromX = from.getX();
+        int fromY = from.getY();
+        int toX = to.getX();
+        int toY = to.getY();
+        if (isInBounds(fromX, fromY) && isInBounds(toX, toY)) {
+            removePieceAt(toX, toY);
+            movePieceTo(from, to);
         }
     }
 
@@ -104,19 +133,21 @@ public class GameBoard {
         }
     }
 
-    // Tranform Model.Tor and Model.Xor pieces
-    public void transformPieceAt(int x, int y) {
+    // Tranform Tor and Xor pieces
+    public void transformPieceAt(Position position) {
+        int x = position.getX();
+        int y = position.getY();
         if (isInBounds(x, y)) {
-            Piece piece = getPieceAt(x, y);
-            if (piece.getType().equals("Tor")) {
-                board[y][x] = factory.createPiece("Xor", piece.getColor(), x, y);
-            } else if (piece.getType().equals("Xor")) {
-                board[y][x] = factory.createPiece("Tor", piece.getColor(), x, y);
+            Piece piece = getPieceAt(position);
+            if (piece.getType().equals("TOR")) {
+                board[y][x] = factory.createPiece("XOR", piece.getColor(), x, y);
+            } else if (piece.getType().equals("XOR")) {
+                board[y][x] = factory.createPiece("TOR", piece.getColor(), x, y);
             }
         }
     }
 
-    // Keep track of Model.Sau piece position
+    // Keep track of Sau piece position
     public void setSauPosition(Position position, String color) {
         if (color.equals("RED")) {
             redSauPosition = position;
@@ -128,7 +159,7 @@ public class GameBoard {
         return color.equals("RED") ? redSauPosition : blueSauPosition;
     }
 
-    // Check if the Model.Sau piece has been captured
+    // Check if the Sau piece has been captured
     public boolean isSauCaptured(String color) {
         int x, y;
         if (color.equals("RED")) {
@@ -138,7 +169,7 @@ public class GameBoard {
             x = blueSauPosition.getX();
             y = blueSauPosition.getY();
         }
-        return board[y][x] == null;
+        return !board[y][x].getType().equals("SAU");
     }
 
     public void setWinner(String w) {
@@ -206,11 +237,11 @@ public class GameBoard {
     }
 
     // List all valid moves for a piece
-    public ArrayList<Position> getValidMoves(Piece piece) {
+    public ArrayList<Position> getPossibleMoves(Piece piece) {
         ArrayList<Position> validMoves = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
-                if (isInBounds(col, row) && piece.isValidMove(this, new Position(col, row))) {
+                if (isInBounds(col, row) && piece.isValidMove(this, new Position(col, row), currentPlayer)) {
                     // Add to list of valid moves
                     validMoves.add(new Position(col, row));
                 }

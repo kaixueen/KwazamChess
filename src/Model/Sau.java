@@ -2,11 +2,11 @@ package Model;
 
 public class Sau extends Piece {
     public Sau(String color, Position position) {
-        super(color, "Ram", position);
+        super(color, "SAU", position);
     }
 
     @Override
-    public boolean isValidMove(GameBoard board, Position to) {
+    public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();
         int fromY = getPosition().getY();
         int toX = to.getX();
@@ -20,7 +20,7 @@ public class Sau extends Piece {
             // Ensure the destination position is empty or contains an opponent's piece
             if (board.isEmpty(toX, toY)) {
                 return true;
-            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(toX, toY).getColor().equals(currentColor)) {
+            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(new Position(toX, toY)).getColor().equals(currentColor)) {
                 return true;
             }
         }

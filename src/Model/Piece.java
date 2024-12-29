@@ -29,7 +29,7 @@ public abstract class Piece {
     }
 
     // Determine if a piece can move to a certain position
-    public abstract boolean isValidMove(GameBoard board, Position to);
+    public abstract boolean isValidMove(GameBoard board, Position to, String player);
 
     // Return a string representation of the piece
     public String toString() {
@@ -58,5 +58,9 @@ public abstract class Piece {
     }
     public boolean isTransformable() {
         return isTransformable;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }
