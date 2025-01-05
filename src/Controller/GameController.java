@@ -12,11 +12,13 @@ package Controller;
 
 import Model.*;
 import View.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+
+import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.plaf.IconUIResource;
 
 
 // Process user input and manage game states
@@ -25,6 +27,7 @@ public class GameController {
     private GameBoard gameModel;
     private ArrayList<Piece> selectedPieces;
     private ArrayList<Position> possibleMoves;
+    private int currentTurn;
 
 
     public GameController(GameView gameView, GameBoard gameModel) {
@@ -32,6 +35,8 @@ public class GameController {
         this.gameModel = gameModel;
         selectedPieces = new ArrayList<>();
         gameView.addPieceListener(new PieceListener(this));
+        gameView.addMenuListener(new MenuListener());
+        currentTurn = 1;
     }
 
     private class PieceListener extends MouseAdapter {
@@ -65,7 +70,7 @@ public class GameController {
 
     public void handlePieceSelection(Position position) {
         Piece selectedPiece = gameModel.getPieceAt(position);
-        if (selectedPiece.getColor() != gameModel.getCurrentPlayer()) {
+        if (selectedPiece == null || !selectedPiece.getColor().equals(gameModel.getCurrentPlayer())) {
             return;
         }
         // Unselect the first piece if the second piece is not the same as the first piece
@@ -123,14 +128,22 @@ public class GameController {
         clearMoveListeners();
         gameModel.determineWinConditions();
         if (gameModel.isGameOver()) {
-            System.out.println("Game Over");
+            gameView.removePieceListener();
+            gameView.gameOver();
+            gameView.addRestartListener(new RestartListener());
+            return;
         }
 
         // Add a delay before flipping the board
         Timer timer = new Timer(800, e -> {
             gameView.flipBoard(); // Flip the board after 1 second
+            if (currentTurn % 4 == 0) {
+                ArrayList<Position> transformedPieces = gameModel.transformPiece();
+                gameView.transformPiece(transformedPieces);
+            }
             gameModel.switchTurn();
             gameView.updateTurn(gameModel.getCurrentPlayer());
+            currentTurn++;
         });
         timer.setRepeats(false); // Configure the timer
         timer.start();           // Start the timer
@@ -143,4 +156,66 @@ public class GameController {
     }
 
 
+    private class MenuListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameView.clickMenu(new SaveListener(), new LoadListener(), new RestartListener());
+        }
+    }
+
+    private class LoadListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    int count = 0;
+                    String[][] gameState = new String[8][5];
+                    String line;
+                    String pieces[];
+                    while ((line = reader.readLine()) != null) {
+                        // read next line
+                        pieces = line.split(" ");
+                        gameState[count] = pieces;
+                        count++;
+                    }
+                    gameView.loadGame(gameState);
+                    gameModel.loadBoardState(gameState);
+                    JOptionPane.showMessageDialog(null, "Game loaded successfully!");
+                } catch (IOException ie) {
+                    JOptionPane.showMessageDialog(null, "Error loading game: " + ie.getMessage());
+                }
+            }
+        }
+    }
+
+    private class SaveListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showSaveDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    ArrayList<String> gameState = gameModel.saveBoardState(); // Assume gameModel has this method
+                    String gameStateStr = String.join("", gameState);
+                    writer.write(gameStateStr);
+                    JOptionPane.showMessageDialog(null, "Game saved successfully!");
+                } catch (IOException ie) {
+                    JOptionPane.showMessageDialog(null, "Error saving game: " + ie.getMessage());
+                }
+            }
+        }
+    }
+
+    private class RestartListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(null, "Restart button clicked!");
+            gameModel.resetBoard();
+            gameView.initPosition();
+        }
+    }
 }

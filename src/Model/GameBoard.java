@@ -177,17 +177,18 @@ public class GameBoard {
     }
 
     // Save board state as a 2D String array
-    public String[][] saveBoardState() {
-        String[][] boardState = new String[ROWS][COLUMNS];
+    public ArrayList<String> saveBoardState() {
+        ArrayList<String> boardState = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 if (isEmpty(col, row)) {
-                    boardState[row][col] = "";
+                    boardState.add("____ ");
                 } else {
                     // Store piece as RRAM, BSAU, etc.
-                    boardState[row][col] = board[row][col].getColor().charAt(0) + board[row][col].getType();
+                    boardState.add(board[row][col].getColor().charAt(0) + board[row][col].getType() + " ");
                 }
             }
+            boardState.add("\n");
         }
         return boardState;
     }
@@ -196,7 +197,7 @@ public class GameBoard {
         resetBoard();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
-                if (!boardState[row][col].equals("")) {
+                if (!boardState[row][col].equals("____")) {
                     String color = boardState[row][col].substring(0, 1).equals("R") ? "RED" : "BLUE";
                     String type = boardState[row][col].substring(1);
                     board[row][col] = factory.createPiece(type, color, col, row);
@@ -297,5 +298,21 @@ public class GameBoard {
             y += stepY;
         }
         return false;
+    }
+
+    public ArrayList<Position> transformPiece() {
+        ArrayList<Position> transformedPieces = new ArrayList<>();
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (board[row][col] != null && board[row][col].getType().equals("TOR")) {
+                    board[row][col] = factory.createPiece("XOR", board[row][col].getColor(), col, row);
+                    transformedPieces.add(new Position(col, row));
+                } else if (board[row][col] != null && board[row][col].getType().equals("XOR")) {
+                    board[row][col] = factory.createPiece("TOR", board[row][col].getColor(), col, row);
+                    transformedPieces.add(new Position(col, row));
+                }
+            }
+        }
+        return transformedPieces;
     }
 }
