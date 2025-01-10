@@ -14,6 +14,7 @@ import Controller.GameController;
 import Model.Position;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -544,56 +545,65 @@ public class GameView {
         public Menu() {
             // Set up the JFrame
             setTitle("Game Menu");
-            setSize(400, 200);
+            setSize(400, 300);
             setLocationRelativeTo(null); // Center the frame
             this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            setLayout(new BorderLayout());
+            setLayout(new BorderLayout()); // Main layout
 
-            // Create panels for left and right sections
-            JPanel leftPanel = new JPanel(new GridLayout(1, 2, 5, 5)); // Two buttons stacked vertically
-            JPanel rightPanel = new JPanel(new BorderLayout());         // One button centered
-            JPanel centerPanel = new JPanel();                          // Spacer for aesthetics
+            // Create top panel for the image
+            JPanel topPanel = new JPanel();
+            topPanel.setBackground(Color.WHITE);
 
-            // Add margins (gap) between buttons and JFrame border
-            leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Top, Left, Bottom, Right
-            rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add consistent gaps
-            centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            // Add image to top panel
+            try {
+                BufferedImage image = ImageIO.read(new File(ICONPATH + "menu.jpg"));
+                Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
+                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+                topPanel.add(picLabel);
+            } catch (IOException ex) {
+                System.out.println("Image not found");
+            }
 
-            // Set background colors
-            leftPanel.setBackground(Color.WHITE);
-            rightPanel.setBackground(Color.WHITE);
-            centerPanel.setBackground(Color.WHITE);
+            // Create bottom panel for the buttons
+            JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10)); // Three buttons in one row
+            bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin around the buttons
+            bottomPanel.setBackground(Color.WHITE);
 
             // Create buttons with styles
-            saveButton = createStyledButton("Save", new Color(102, 205, 170));   // Medium aquamarine
-            loadButton = createStyledButton("Load", new Color(135, 206, 250));   // Sky blue
-            restartButton = createStyledButton("Restart", new Color(240, 128, 128)); // Light coral
+            saveButton = new JButton("Save");
+            loadButton = new JButton("Load");
+            restartButton = new JButton("Restart");
 
-            // Add buttons to panels
-            leftPanel.add(saveButton);
-            leftPanel.add(loadButton);
-            rightPanel.add(restartButton, BorderLayout.CENTER);
+            saveButton.setFont(menuFont);
+            loadButton.setFont(menuFont);
+            restartButton.setFont(menuFont);
+
+            saveButton.setBackground(new Color(102, 205, 170));   // Medium aquamarine
+            loadButton.setBackground(new Color(135, 206, 250));   // Sky blue
+            restartButton.setBackground(new Color(240, 128, 128)); // Light coral
+
+            saveButton.setForeground(Color.WHITE);
+            loadButton.setForeground(Color.WHITE);
+            restartButton.setForeground(Color.WHITE);
+
+            saveButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            loadButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+            // Add buttons to bottom panel
+            bottomPanel.add(saveButton);
+            bottomPanel.add(loadButton);
+            bottomPanel.add(restartButton);
 
             // Add panels to the frame
-            add(leftPanel, BorderLayout.WEST);
-            add(rightPanel, BorderLayout.EAST);
-            add(centerPanel, BorderLayout.CENTER); // Spacer to balance layout
+            add(topPanel, BorderLayout.CENTER);  // Image at the top
+            add(bottomPanel, BorderLayout.SOUTH); // Buttons at the bottom
 
             // Make the frame visible
             setVisible(true);
         }
-
-        // Helper method to create a styled button
-        private JButton createStyledButton(String text, Color color) {
-            JButton button = new JButton(text);
-            button.setFont(new Font("Arial", Font.BOLD, 16));
-            button.setBackground(color);
-            button.setForeground(Color.WHITE);
-            button.setFocusPainted(false);
-            button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            return button;
-        }
     }
+
 
     public void clickMenu(ActionListener slistener, ActionListener llistener, ActionListener rlistener) {
         new Menu();
