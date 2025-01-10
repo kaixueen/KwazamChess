@@ -41,58 +41,25 @@ public class GameView {
     private JPanel boardPanel = new JPanel();
     private JPanel footerPanel = new JPanel(new BorderLayout());
     private JPanel menuWrapper = new JPanel(new BorderLayout());
-    // private String[] options = { "Save Game", "Load Game", "Restart" };
     private JButton menu;
     private JLabel turnLabel;
     private JButton[][] board = new JButton[8][5];
-    private static String ICONPATH="src/Images/";
-    private JButton saveButton;
-    private JButton loadButton;
-    private JButton restartButton;
+    public static String IMAGE_PATH="src/Images/";
 
-    // new
-    private boolean isFlipped = false;
-    private boolean isEnlarged = false;
-    private int enlargedButtonX = -1, enlargedButtonY = -1;
+    private boolean isFlipped;
+    private boolean isEnlarged;
+    private int enlargedButtonX, enlargedButtonY;
 
     // Font setup
     private Font titleFont = new Font("Lucida Calligraphy", Font.BOLD, 50);
     private Font turnFont = new Font("Lucida Calligraphy", Font.BOLD, 30);
     private Font menuFont = new Font("Lucida Calligraphy", Font.BOLD, 20);
 
-    // Image icon for pieces
-    private ImageIcon BlueBiz = new ImageIcon(
-            new ImageIcon(ICONPATH + "Blue_Biz.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "BlueBiz");
-    private ImageIcon RedBiz = new ImageIcon(
-            new ImageIcon(ICONPATH + "Red_Biz.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "RedBiz");
-    private ImageIcon BlueRam = new ImageIcon(
-            new ImageIcon(ICONPATH + "Blue_Ram.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "BlueRam");
-    private ImageIcon RedRam = new ImageIcon(
-            new ImageIcon(ICONPATH + "Red_Ram.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "RedRam");
-    private ImageIcon BlueSau = new ImageIcon(
-            new ImageIcon(ICONPATH + "Blue_Sau.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "BlueSau");
-    private ImageIcon RedSau = new ImageIcon(
-            new ImageIcon(ICONPATH + "Red_Sau.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "RedSau");
-    private ImageIcon BlueTor = new ImageIcon(
-            new ImageIcon(ICONPATH + "Blue_Tor.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "BlueTor");
-    private ImageIcon RedTor = new ImageIcon(
-            new ImageIcon(ICONPATH + "Red_Tor.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "RedTor");
-    private ImageIcon BlueXor = new ImageIcon(
-            new ImageIcon(ICONPATH + "Blue_Xor.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "BlueXor");
-    private ImageIcon RedXor = new ImageIcon(
-            new ImageIcon(ICONPATH + "Red_Xor.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH), "RedXor");
-
-    // Game Over dialog
-    private JDialog gameOverDialog;
-    private JLabel topGOLabel;
-    private JLabel bottomGOLabel;
-
     // Constructor
     public GameView() {
         frame.setVisible(true);
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
-        // frame.setResizable(false);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
@@ -137,13 +104,11 @@ public class GameView {
             }
         }
 
-        initPosition();
-
         // Footer Panel
         menu = new JButton("Menu");
         menu.setFont(menuFont);
         menu.setBackground(Color.WHITE);
-        // menu.addActionListener(e -> Menu());
+
         // To make the button has margin and not too close to the edge
         menuWrapper.setBackground(Color.BLACK);
         menuWrapper.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Add margin to the wrapper
@@ -151,75 +116,93 @@ public class GameView {
         footerPanel.add(menuWrapper, BorderLayout.WEST);
 
         turnLabel = new JLabel("Now is Blue Turn!");
+        turnLabel.setForeground(Color.BLUE);
         turnLabel.setFont(turnFont);
-        turnLabel.setForeground(Color.WHITE);
         turnLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        // footerPanel.add(menu, BorderLayout.WEST);
         footerPanel.add(turnLabel, BorderLayout.EAST);
         footerPanel.setPreferredSize(new Dimension(boardWidth, footerHeight));
         footerPanel.setBackground(Color.BLACK);
         frame.add(footerPanel, BorderLayout.SOUTH);
+
+        initPosition();
     }
 
     public void initPosition() {
+        turnLabel.setText("Now is Blue Turn!");
+        turnLabel.setForeground(Color.BLUE);
+        isFlipped = false;
+        isEnlarged = false;
+        enlargedButtonX = enlargedButtonY = -1;
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 5; j++) {
                 switch (i) {
                     case 0:
                         switch (j) {
-
                             case 0:
-                                board[i][j].setIcon(RedTor);
+                                // board[i][j].setIcon(RedTor);
+                                setIcon(board[i][j], "RTOR");
                                 break;
 
                             case 1:
-                                board[i][j].setIcon(RedBiz);
+                                // board[i][j].setIcon(RedBiz);
+                                setIcon(board[i][j], "RBIZ");
                                 break;
 
                             case 2:
-                                board[i][j].setIcon(RedSau);
+                                // board[i][j].setIcon(RedSau);
+                                setIcon(board[i][j], "RSAU");
                                 break;
 
                             case 3:
-                                board[i][j].setIcon(RedBiz);
+                                // board[i][j].setIcon(RedBiz);
+                                setIcon(board[i][j], "RBIZ");
                                 break;
 
                             case 4:
-                                board[i][j].setIcon(RedXor);
+                                // board[i][j].setIcon(RedXor);
+                                setIcon(board[i][j], "RXOR");
                                 break;
                         }
 
                         break;
 
                     case 1:
-                        board[i][j].setIcon(RedRam);
+                        // board[i][j].setIcon(RedRam);
+                        setIcon(board[i][j], "RRAM");
                         break;
 
                     case 6:
-                        board[i][j].setIcon(BlueRam);
+                        // board[i][j].setIcon(BlueRam);
+                        setIcon(board[i][j], "BRAM");
                         break;
 
                     case 7:
                         switch (j) {
 
                             case 0:
-                                board[i][j].setIcon(BlueXor);
+                                // board[i][j].setIcon(BlueXor);
+                                setIcon(board[i][j], "BXOR");
                                 break;
 
                             case 1:
-                                board[i][j].setIcon(BlueBiz);
+                                // board[i][j].setIcon(BlueBiz);
+                                setIcon(board[i][j], "BBIZ");
                                 break;
 
                             case 2:
-                                board[i][j].setIcon(BlueSau);
+                                // board[i][j].setIcon(BlueSau);
+                                setIcon(board[i][j], "BSAU");
                                 break;
 
                             case 3:
-                                board[i][j].setIcon(BlueBiz);
+                                // board[i][j].setIcon(BlueBiz);
+                                setIcon(board[i][j], "BBIZ");
                                 break;
 
                             case 4:
-                                board[i][j].setIcon(BlueTor);
+                                // board[i][j].setIcon(BlueTor);
+                                setIcon(board[i][j], "BTOR");
                                 break;
                         }
                         break;
@@ -232,45 +215,27 @@ public class GameView {
         }
     }
 
-//    public int showMenu() {
-//        int response = JOptionPane.showOptionDialog(
-//                null,
-//                "choose the option: ",
-//                "choose frame",
-//                JOptionPane.DEFAULT_OPTION,
-//                JOptionPane.INFORMATION_MESSAGE,
-//                null,
-//                options,
-//                options[0]);
-//        return response;
-////        if (response == 0) {
-////            // Save Game
-////            saveGame();
-////        } else if (response == 1) {
-////            // Load Game
-////            loadGame("RedTor RedBiz RedSau RedBiz RedXor RedRam RedRam RedRam null null null null null null null null null null RedRam RedRam null null null null null null null null null null BlueRam BlueRam BlueRam BlueRam BlueRam BlueXor BlueBiz BlueSau BlueBiz BlueTor");
-////        } else if (response == 2) {
-////            // Restart
-////            initPosition();
-////        }
-//    }
+    public void setIcon(JButton button, String description) {
+        if (description.equals("null")) {
+            button.setIcon(null);
+            button.setActionCommand(null);
+            return;
+        }
+        ImageIcon icon = new ImageIcon(new ImageIcon(IMAGE_PATH + description + ".png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        button.setIcon(icon);
+        button.setActionCommand(description);
+    }
 
     public void movePiece(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
         int toX = to.getX();
         int toY = to.getY();
-        JButton fromSquare = board[fromY][fromX];
-        JButton toSquare = board[toY][toX];
-        toSquare.setIcon(fromSquare.getIcon());
-        fromSquare.setIcon(null);
-    }
-    // Maybe not neccessary, but still keep it
-    public void addPiece(int x, int y, ImageIcon icon) {
-        board[y][x].setIcon(icon);
-    }
-    public void removePiece(int x, int y) {
-        board[y][x].setIcon(null);
+
+        board[toY][toX].setIcon(board[fromY][fromX].getIcon());
+        board[toY][toX].setActionCommand(board[fromY][fromX].getActionCommand());
+
+        setIcon(board[fromY][fromX], "null");
     }
 
     public void flipBoard() {
@@ -316,82 +281,51 @@ public class GameView {
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
 
-        return new ImageIcon(rotated, icon.getDescription());
+        return new ImageIcon(rotated);
     }
 
     public void loadGame(String[][] state) {
-        int index = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 5; j++) {
                 switch (state[i][j]) {
                     case "RTOR":
-                        board[i][j].setIcon(RedTor);
+                        setIcon(board[i][j], "RTOR");
                         break;
                     case "RBIZ":
-                        board[i][j].setIcon(RedBiz);
+                        setIcon(board[i][j], "RBIZ");
                         break;
                     case "RSAU":
-                        board[i][j].setIcon(RedSau);
+                        setIcon(board[i][j], "RSAU");
                         break;
                     case "RRAM":
-                        board[i][j].setIcon(RedRam);
+                        setIcon(board[i][j], "RRAM");
                         break;
                     case "RXOR":
-                        board[i][j].setIcon(RedXor);
+                        setIcon(board[i][j], "RXOR");
                         break;
                     case "BTOR":
-                        board[i][j].setIcon(BlueTor);
+                        setIcon(board[i][j], "BTOR");
                         break;
                     case "BBIZ":
-                        board[i][j].setIcon(BlueBiz);
+                        setIcon(board[i][j], "BBIZ");
                         break;
                     case "BSAU":
-                        board[i][j].setIcon(BlueSau);
+                        setIcon(board[i][j], "BSAU");
                         break;
                     case "BRAM":
-                        board[i][j].setIcon(BlueRam);
+                        setIcon(board[i][j], "BRAM");
                         break;
                     case "BXOR":
-                        board[i][j].setIcon(BlueXor);
+                        setIcon(board[i][j], "BXOR");
                         break;
                     default:
-                        board[i][j].setIcon(null);
+                        setIcon(board[i][j], "null");
                         break;
                 }
             }
         }
         boardPanel.revalidate();
         boardPanel.repaint();
-    }
-
-    public void gameOver(){
-        gameOverDialog = new JDialog(frame, "Game Over", true);
-        gameOverDialog.setSize(300, 200);
-        gameOverDialog.setLocationRelativeTo(frame);
-        gameOverDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        topGOLabel = new JLabel("Game Over");
-        topGOLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        topGOLabel.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
-
-        bottomGOLabel = new JLabel();
-        bottomGOLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        restartButton = new JButton("Restart");
-        restartButton.setFont(new Font("Lucida Calligraphy", Font.BOLD, 12));
-        restartButton.setBackground(new Color(236, 235, 222));
-
-//        restartButton.addActionListener(e -> {
-//            frame.dispose();
-//            new GameView();
-//        });
-        bottomGOLabel.setLayout(new BorderLayout());
-        bottomGOLabel.add(restartButton, BorderLayout.CENTER);
-        bottomGOLabel.setVisible(true);
-
-        gameOverDialog.setLayout(new BorderLayout());
-        gameOverDialog.add(topGOLabel, BorderLayout.NORTH);
-        gameOverDialog.add(bottomGOLabel, BorderLayout.CENTER);
-        gameOverDialog.setVisible(true);
     }
 
     public void pieceOnHover(Position position, String player) {
@@ -450,6 +384,7 @@ public class GameView {
 
     public void updateTurn(String player) {
         turnLabel.setText("Now is " + player + " Turn!");
+        turnLabel.setForeground(player.equals("RED") ? Color.RED : Color.BLUE);
     }
 
     public void addPieceListener(MouseAdapter listener) {
@@ -476,10 +411,6 @@ public class GameView {
 
     public void addMenuListener(ActionListener listener) {
         menu.addActionListener(listener);
-    }
-
-    public void addRestartListener(ActionListener listener) {
-        restartButton.addActionListener(listener);
     }
 
     public Position findButtonPosition(JButton btn) {
@@ -541,92 +472,29 @@ public class GameView {
         }
     }
 
-    private class Menu extends JFrame {
-        public Menu() {
-            // Set up the JFrame
-            setTitle("Game Menu");
-            setSize(400, 300);
-            setLocationRelativeTo(null); // Center the frame
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            setLayout(new BorderLayout()); // Main layout
-
-            // Create top panel for the image
-            JPanel topPanel = new JPanel();
-            topPanel.setBackground(Color.WHITE);
-
-            // Add image to top panel
-            try {
-                BufferedImage image = ImageIO.read(new File(ICONPATH + "menu.jpg"));
-                Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
-                JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
-                topPanel.add(picLabel);
-            } catch (IOException ex) {
-                System.out.println("Image not found");
-            }
-
-            // Create bottom panel for the buttons
-            JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10)); // Three buttons in one row
-            bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin around the buttons
-            bottomPanel.setBackground(Color.WHITE);
-
-            // Create buttons with styles
-            saveButton = new JButton("Save");
-            loadButton = new JButton("Load");
-            restartButton = new JButton("Restart");
-
-            saveButton.setFont(menuFont);
-            loadButton.setFont(menuFont);
-            restartButton.setFont(menuFont);
-
-            saveButton.setBackground(new Color(102, 205, 170));   // Medium aquamarine
-            loadButton.setBackground(new Color(135, 206, 250));   // Sky blue
-            restartButton.setBackground(new Color(240, 128, 128)); // Light coral
-
-            saveButton.setForeground(Color.WHITE);
-            loadButton.setForeground(Color.WHITE);
-            restartButton.setForeground(Color.WHITE);
-
-            saveButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            loadButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-            restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-            // Add buttons to bottom panel
-            bottomPanel.add(saveButton);
-            bottomPanel.add(loadButton);
-            bottomPanel.add(restartButton);
-
-            // Add panels to the frame
-            add(topPanel, BorderLayout.CENTER);  // Image at the top
-            add(bottomPanel, BorderLayout.SOUTH); // Buttons at the bottom
-
-            // Make the frame visible
-            setVisible(true);
-        }
-    }
-
 
     public void clickMenu(ActionListener slistener, ActionListener llistener, ActionListener rlistener) {
-        new Menu();
-        saveButton.addActionListener(slistener);
-        loadButton.addActionListener(llistener);
-        restartButton.addActionListener(rlistener);
+        MenuView menu = new MenuView();
+        menu.addButtonsListener(slistener, llistener, rlistener);
     }
 
-    public void transformPiece(ArrayList<Position> transformedPieces) {
-        for (Position pos : transformedPieces) {
-            int x = pos.getX();
-            int y = pos.getY();
-            String icon = ((ImageIcon) board[y][x].getIcon()).getDescription();
+    public void transformPiece(Position transformedPiece) {
+        int x = transformedPiece.getX();
+        int y = transformedPiece.getY();
+        String icon = board[y][x].getActionCommand();
 
-            if (icon.equals("RedTor")) {
-                board[y][x].setIcon(RedXor);
-            } else if (icon.equals("RedXor")) {
-                board[y][x].setIcon(RedTor);
-            } else if (icon.equals("BlueTor")) {
-                board[y][x].setIcon(BlueXor);
-            } else if (icon.equals("BlueXor")) {
-                board[y][x].setIcon(BlueTor);
-            }
+        if (icon.equals("RTOR")) {
+            setIcon(board[y][x], "RXOR");
+        } else if (icon.equals("RXOR")) {
+            setIcon(board[y][x], "RTOR");
+        } else if (icon.equals("BTOR")) {
+            setIcon(board[y][x], "BXOR");
+        } else if (icon.equals("BXOR")) {
+            setIcon(board[y][x], "BTOR");
         }
+    }
+
+    public boolean isFlipped() {
+        return isFlipped;
     }
 }

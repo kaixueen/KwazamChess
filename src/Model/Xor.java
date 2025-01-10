@@ -15,7 +15,7 @@ public class Xor extends Piece {
         int dy = Math.abs(toY - fromY);
         String currentColor = getColor();
 
-        // Ensure orthogonal move
+        // Ensure diagonal move
         if (!board.isDiagonalPathBlocked(getPosition(), to) && (dx == dy) && (dx != 0 && dy != 0)) {
             // Ensure the destination position is empty or contains an opponent's piece
             if (board.isEmpty(toX, toY)) {

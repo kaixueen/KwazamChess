@@ -10,15 +10,12 @@ import java.io.IOException;
 
 import static View.GameView.IMAGE_PATH;
 
-// Manage Menu GUI
-public class MenuView extends JFrame {
+public class BlueWinView extends JFrame {
     private Font menuFont = new Font("Lucida Calligraphy", Font.BOLD, 20);
-    private JButton saveButton, loadButton, restartButton;
+    private JButton restartButton;
 
-    // Constructor
-    public MenuView() {
-        // Set up the JFrame
-        setTitle("Game Menu");
+    public BlueWinView(ActionListener restartListener) {
+        setTitle("Congratulations! Blue wins!");
         setSize(400, 300);
         setLocationRelativeTo(null); // Center the frame
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -28,9 +25,8 @@ public class MenuView extends JFrame {
         JPanel topPanel = new JPanel();
         topPanel.setBackground(Color.WHITE);
 
-        // Add image to top panel
         try {
-            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + "MENU.jpg"));
+            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + "BLUE_WIN.jpg"));
             Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
             JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
             topPanel.add(picLabel);
@@ -38,35 +34,16 @@ public class MenuView extends JFrame {
             System.out.println("Image not found");
         }
 
-        // Create bottom panel for the buttons
-        JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10)); // Three buttons in one row
+        JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin around the buttons
         bottomPanel.setBackground(Color.WHITE);
 
-        // Create buttons with styles
-        saveButton = new JButton("Save");
-        loadButton = new JButton("Load");
         restartButton = new JButton("Restart");
-
-        saveButton.setFont(menuFont);
-        loadButton.setFont(menuFont);
         restartButton.setFont(menuFont);
-
-        saveButton.setBackground(new Color(102, 205, 170));   // Medium aquamarine
-        loadButton.setBackground(new Color(135, 206, 250));   // Sky blue
-        restartButton.setBackground(new Color(240, 128, 128)); // Light coral
-
-        saveButton.setForeground(Color.WHITE);
-        loadButton.setForeground(Color.WHITE);
+        restartButton.setBackground(Color.BLACK);
         restartButton.setForeground(Color.WHITE);
-
-        saveButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        loadButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        // Add buttons to bottom panel
-        bottomPanel.add(saveButton);
-        bottomPanel.add(loadButton);
+        restartButton.addActionListener(restartListener);
         bottomPanel.add(restartButton);
 
         // Add panels to the frame
@@ -76,10 +53,5 @@ public class MenuView extends JFrame {
         // Make the frame visible
         setVisible(true);
     }
-
-    public void addButtonsListener(ActionListener saveListener, ActionListener loadListener, ActionListener restartListener) {
-        saveButton.addActionListener(saveListener);
-        loadButton.addActionListener(loadListener);
-        restartButton.addActionListener(restartListener);
-    }
 }
+

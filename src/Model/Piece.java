@@ -33,7 +33,7 @@ public abstract class Piece {
 
     // Return a string representation of the piece
     public String toString() {
-        return color + " " + type;
+        return color.charAt(0) + type;
     }
 
     // Move the piece to a new position

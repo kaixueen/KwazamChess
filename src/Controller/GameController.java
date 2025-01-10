@@ -13,29 +13,27 @@ package Controller;
 import Model.*;
 import View.*;
 
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-
 import javax.swing.*;
-import javax.swing.plaf.IconUIResource;
-
 
 // Process user input and manage game states
 public class GameController {
     private GameView gameView;
-    private GameBoard gameModel;
+    private GameBoard gameBoard;
     private ArrayList<Piece> selectedPieces;
     private ArrayList<Position> possibleMoves;
     private int currentTurn;
 
-
-    public GameController(GameView gameView, GameBoard gameModel) {
+    public GameController(GameView gameView, GameBoard gameBoard) {
         this.gameView = gameView;
-        this.gameModel = gameModel;
+        this.gameBoard = gameBoard;
         selectedPieces = new ArrayList<>();
         gameView.addPieceListener(new PieceListener(this));
         gameView.addMenuListener(new MenuListener());
+
         currentTurn = 1;
     }
 
@@ -57,7 +55,7 @@ public class GameController {
         public void mouseEntered(MouseEvent e) {
             JButton enteredButton = (JButton) e.getSource();
             Position position = gameView.findButtonPosition(enteredButton);
-            gameView.pieceOnHover(position, gameModel.getCurrentPlayer());
+            gameView.pieceOnHover(position, gameBoard.getCurrentPlayer());
         }
 
         @Override
@@ -69,8 +67,8 @@ public class GameController {
     }
 
     public void handlePieceSelection(Position position) {
-        Piece selectedPiece = gameModel.getPieceAt(position);
-        if (selectedPiece == null || !selectedPiece.getColor().equals(gameModel.getCurrentPlayer())) {
+        Piece selectedPiece = gameBoard.getPieceAt(position);
+        if (selectedPiece == null || !selectedPiece.getColor().equals(gameBoard.getCurrentPlayer())) {
             return;
         }
         // Unselect the first piece if the second piece is not the same as the first piece
@@ -85,16 +83,16 @@ public class GameController {
             if(!selectedPieces.isEmpty() && selectedPieces.getFirst() == selectedPiece) {
                 selectedPieces.remove(selectedPiece);
                 gameView.pieceOnClick(position);
-                possibleMoves = gameModel.getPossibleMoves(selectedPiece);
+                possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
                 gameView.removeMoveListener(possibleMoves, new MoveListener(this));
                 gameView.unhighlightPossibleMoves(possibleMoves);
             } else {
                 // Select the piece
                 selectedPieces.add(selectedPiece);
                 gameView.pieceOnClick(position);
-                possibleMoves = gameModel.getPossibleMoves(selectedPiece);
+                possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
                 gameView.addMoveListener(possibleMoves, new MoveListener(this));
-                gameView.highlightPossibleMoves(possibleMoves, gameModel.getCurrentPlayer());
+                gameView.highlightPossibleMoves(possibleMoves, gameBoard.getCurrentPlayer());
             }
         }
     }
@@ -118,19 +116,24 @@ public class GameController {
         Piece selectedPiece = selectedPieces.getFirst();
         gameView.pieceOnClick(selectedPiece.getPosition());
         gameView.movePiece(selectedPiece.getPosition(), position);
-        if (gameModel.isEmpty(position.getX(), position.getY())) {
-            gameModel.movePieceTo(selectedPiece.getPosition(), position);
+        if (gameBoard.isEmpty(position.getX(), position.getY())) {
+            gameBoard.movePieceTo(selectedPiece.getPosition(), position);
         } else {
-           gameModel.capturePiece(selectedPiece.getPosition(), position);
+           gameBoard.capturePiece(selectedPiece.getPosition(), position);
         }
 
         selectedPieces.clear();
         clearMoveListeners();
-        gameModel.determineWinConditions();
-        if (gameModel.isGameOver()) {
+        String winner = gameBoard.determineWinConditions();
+        if (gameBoard.isGameOver()) {
             gameView.removePieceListener();
-            gameView.gameOver();
-            gameView.addRestartListener(new RestartListener());
+            if (winner.equals("RED")) {
+                new RedWinView(new RestartListener());
+            } else if (winner.equals("BLUE")) {
+                new BlueWinView(new RestartListener());
+            } else {
+                new DrawView(new RestartListener());
+            }
             return;
         }
 
@@ -138,11 +141,14 @@ public class GameController {
         Timer timer = new Timer(800, e -> {
             gameView.flipBoard(); // Flip the board after 1 second
             if (currentTurn % 4 == 0) {
-                ArrayList<Position> transformedPieces = gameModel.transformPiece();
-                gameView.transformPiece(transformedPieces);
+                ArrayList<Position> transformedPieces = gameBoard.transformPiece();
+                for (Position pos : transformedPieces) {
+                    gameBoard.transformPieceAt(pos);
+                    gameView.transformPiece(pos);
+                }
             }
-            gameModel.switchTurn();
-            gameView.updateTurn(gameModel.getCurrentPlayer());
+            gameBoard.switchTurn();
+            gameView.updateTurn(gameBoard.getCurrentPlayer());
             currentTurn++;
         });
         timer.setRepeats(false); // Configure the timer
@@ -182,7 +188,7 @@ public class GameController {
                         count++;
                     }
                     gameView.loadGame(gameState);
-                    gameModel.loadBoardState(gameState);
+                    gameBoard.loadBoardState(gameState);
                     JOptionPane.showMessageDialog(null, "Game loaded successfully!");
                 } catch (IOException ie) {
                     JOptionPane.showMessageDialog(null, "Error loading game: " + ie.getMessage());
@@ -199,7 +205,7 @@ public class GameController {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    ArrayList<String> gameState = gameModel.saveBoardState(); // Assume gameModel has this method
+                    ArrayList<String> gameState = gameBoard.saveBoardState(); // Assume gameBoard has this method
                     String gameStateStr = String.join("", gameState);
                     writer.write(gameStateStr);
                     JOptionPane.showMessageDialog(null, "Game saved successfully!");
@@ -213,9 +219,12 @@ public class GameController {
     private class RestartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(null, "Restart button clicked!");
-            gameModel.resetBoard();
+            if (gameView.isFlipped())
+                gameView.flipBoard();
+            gameBoard.initializeBoard();
             gameView.initPosition();
+            currentTurn = 1;
+            SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
 }

@@ -1,14 +1,12 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 // Manage game board
 public class GameBoard {
     public static final int ROWS = 8;
     public static final int COLUMNS = 5;
-    private static final int TURN_LIMIT = 50;
+    private static final int TURN_LIMIT = 100;
     private PieceFactory factory;
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
@@ -26,13 +24,6 @@ public class GameBoard {
         remainingBluePieces = remainingRedPieces = 10;
         factory = new PieceFactory();
         initializeBoard();
-        redSauPosition = new Position(2, 0);
-        blueSauPosition = new Position(2, ROWS - 1);
-        winner = "";
-        currentTurn = 0;
-        currentPlayer = player1 = "BLUE";
-        player2 = "RED";
-        isGameOver = false;
     }
     
     public void initializeBoard() {
@@ -47,16 +38,16 @@ public class GameBoard {
         String[] firstRowPieces = "TOR BIZ SAU BIZ XOR".split(" ");
         for (int col = 0; col < COLUMNS; col++) {
             board[0][col] = factory.createPiece(firstRowPieces[col], "RED", col, 0);
-            board[ROWS - 1][col] = factory.createPiece(firstRowPieces[col], "BLUE", col, ROWS - 1);
+            board[ROWS - 1][col] = factory.createPiece(firstRowPieces[COLUMNS-col-1], "BLUE", col, ROWS - 1);
         }
-    }
 
-    public void setBoard(Piece[][] board) {
-        this.board = board;
-    }
-
-    public Piece[][] getBoard() {
-        return board;
+        redSauPosition = new Position(2, 0);
+        blueSauPosition = new Position(2, ROWS - 1);
+        winner = "";
+        currentTurn = 0;
+        currentPlayer = player1 = "BLUE";
+        player2 = "RED";
+        isGameOver = false;
     }
 
     public String getCurrentPlayer() {
@@ -103,8 +94,9 @@ public class GameBoard {
         if (isInBounds(fromX, fromY) && isInBounds(toX, toY)) {
             Piece piece = getPieceAt(from);
             if (isEmpty(toX, toY) && piece != null) {
-                board[fromY][fromX] = null;
                 board[toY][toX] = piece;
+                board[fromY][fromX] = null;
+
                 piece.setPosition(to);
                 if (piece.getType().equals("SAU")) {
                     setSauPosition(to, piece.getColor());
@@ -129,20 +121,6 @@ public class GameBoard {
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 board[row][col] = null;
-            }
-        }
-    }
-
-    // Tranform Tor and Xor pieces
-    public void transformPieceAt(Position position) {
-        int x = position.getX();
-        int y = position.getY();
-        if (isInBounds(x, y)) {
-            Piece piece = getPieceAt(position);
-            if (piece.getType().equals("TOR")) {
-                board[y][x] = factory.createPiece("XOR", piece.getColor(), x, y);
-            } else if (piece.getType().equals("XOR")) {
-                board[y][x] = factory.createPiece("TOR", piece.getColor(), x, y);
             }
         }
     }
@@ -304,15 +282,25 @@ public class GameBoard {
         ArrayList<Position> transformedPieces = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
-                if (board[row][col] != null && board[row][col].getType().equals("TOR")) {
-                    board[row][col] = factory.createPiece("XOR", board[row][col].getColor(), col, row);
-                    transformedPieces.add(new Position(col, row));
-                } else if (board[row][col] != null && board[row][col].getType().equals("XOR")) {
-                    board[row][col] = factory.createPiece("TOR", board[row][col].getColor(), col, row);
+                if (board[row][col] != null && (board[row][col].getType().equals("TOR") || board[row][col].getType().equals("XOR"))) {
                     transformedPieces.add(new Position(col, row));
                 }
             }
         }
         return transformedPieces;
+    }
+
+    // Tranform Tor and Xor pieces
+    public void transformPieceAt(Position position) {
+        int x = position.getX();
+        int y = position.getY();
+        if (isInBounds(x, y)) {
+            Piece piece = getPieceAt(position);
+            if (piece.getType().equals("TOR")) {
+                board[y][x] = factory.createPiece("XOR", piece.getColor(), x, y);
+            } else if (piece.getType().equals("XOR")) {
+                board[y][x] = factory.createPiece("TOR", piece.getColor(), x, y);
+            }
+        }
     }
 }
