@@ -175,7 +175,7 @@ public class GameView {
             // Flip: Display bottom-to-top and right-to-left
             for (int r = ROWS-1; r >= 0; r--) {
                 for (int c = COLUMNS-1; c >= 0; c--) {
-                    board[r][c].setIcon(rotateIcon((ImageIcon) board[r][c].getIcon()));
+                    rotateIcon(new Position(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in flipped order
                 }
             }
@@ -184,7 +184,7 @@ public class GameView {
             // Restore: Display top-to-bottom and left-to-right
             for (int r = 0; r < ROWS; r++) {
                 for (int c = 0; c < COLUMNS; c++) {
-                    board[r][c].setIcon(rotateIcon((ImageIcon) board[r][c].getIcon()));
+                    rotateIcon(new Position(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in original order
                 }
             }
@@ -206,9 +206,18 @@ public class GameView {
         boardPanel.repaint();
     }
 
-    public ImageIcon rotateIcon(ImageIcon icon){
+//    public ImageIcon getIconAt(Position position) {
+//        int x = position.getX();
+//        int y = position.getY();
+//        return (ImageIcon) board[y][x].getIcon();
+//    }
+
+    public void rotateIcon(Position position){
+        int x = position.getX();
+        int y = position.getY();
+        ImageIcon icon = (ImageIcon) board[y][x].getIcon();;
         if (icon == null) {
-            return null;
+            return;
         }
         Image image = icon.getImage();
         int width = image.getWidth(null);
@@ -222,7 +231,7 @@ public class GameView {
         g2d.drawImage(image, 0, 0, null);
         g2d.dispose();
 
-        return new ImageIcon(rotated);
+        board[y][x].setIcon(new ImageIcon(rotated));
     }
 
     public void loadGame(String[][] state) {

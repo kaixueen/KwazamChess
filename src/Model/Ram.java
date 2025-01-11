@@ -1,5 +1,7 @@
 package Model;
 
+import static Model.GameBoard.ROWS;
+
 public class Ram extends Piece {
     public Ram(String color, Position position) {
         super(color, "RAM", position);
@@ -12,9 +14,6 @@ public class Ram extends Piece {
         int toX = to.getX();
         int toY = to.getY();
         String currentColor = getColor();
-        if (fromY == 0 || fromY == board.ROWS - 1) {
-            setMovingForward(!isMovingForward());
-        }
 
         // Ensure the vertical distance between the two positions is 1
         if ((((toY - fromY == -1 && toX == fromX && isMovingForward()) || (toY - fromY == 1 && toX == fromX && !isMovingForward()))

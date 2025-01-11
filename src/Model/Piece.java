@@ -4,10 +4,9 @@ package Model;
 public abstract class Piece {
     private String color;
     private String type;
-    // private Move moves[];
     private Position position;
     private boolean isMovingForward; // Only for Ram
-    private boolean isTransformable; // Only for Tor and Xor
+    private boolean isIconNeedToFlip; // Only for Ram
 
     // Constructor
     public Piece(String color, String type, Position position) {
@@ -15,6 +14,7 @@ public abstract class Piece {
         this.type = type;
         this.position = position;
         isMovingForward = true;
+        isIconNeedToFlip = false;
     }
 
     // Getter methods
@@ -36,16 +36,6 @@ public abstract class Piece {
         return color.charAt(0) + type;
     }
 
-    // Move the piece to a new position
-    public void move(int toX, int toY) {
-        return;
-    }
-
-    // Capture a piece
-    public void capture(Piece piece) {
-        return;
-    }
-
     public void setMovingForward(boolean isMovingForward) {
         this.isMovingForward = isMovingForward;
     }
@@ -53,14 +43,14 @@ public abstract class Piece {
         return isMovingForward;
     }
 
-    public void setTransformable(boolean isTransformable) {
-        this.isTransformable = isTransformable;
-    }
-    public boolean isTransformable() {
-        return isTransformable;
-    }
-
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public void setIconNeedToFlip(boolean isIconNeedToFlip) {
+        this.isIconNeedToFlip = isIconNeedToFlip;
+    }
+    public boolean isIconNeedToFlip() {
+        return isIconNeedToFlip;
     }
 }

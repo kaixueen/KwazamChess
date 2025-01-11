@@ -105,6 +105,13 @@ public class GameBoard {
                 if (piece.getType().equals("SAU")) {
                     setSauPosition(to, piece.getColor());
                 }
+                if (piece.getType().equals("RAM") && ((toY == 0 && piece.getColor().equals("BLUE")) || (toY == ROWS - 1 && piece.getColor().equals("RED")))) {
+                    piece.setMovingForward(false);
+                    piece.setIconNeedToFlip(true);
+                } else if (piece.getType().equals("RAM") && ((toY == ROWS - 1 && piece.getColor().equals("BLUE")) || (toY == 0 && piece.getColor().equals("RED")))) {
+                    piece.setMovingForward(true);
+                    piece.setIconNeedToFlip(true);
+                }
             }
         }
     }

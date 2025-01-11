@@ -110,6 +110,11 @@ public class GameController {
            gameBoard.capturePiece(selectedPiece.getPosition(), position);
         }
 
+        if (selectedPiece.isIconNeedToFlip()) {
+            gameView.rotateIcon(selectedPiece.getPosition());
+            selectedPiece.setIconNeedToFlip(false);
+        }
+
         selectedPieces.clear();
         clearMoveListeners();
         String winner = gameBoard.determineWinConditions();
