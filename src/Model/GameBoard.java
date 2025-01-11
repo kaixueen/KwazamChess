@@ -6,26 +6,24 @@ import java.util.ArrayList;
 public class GameBoard {
     public static final int ROWS = 8;
     public static final int COLUMNS = 5;
-    private static final int TURN_LIMIT = 100;
+    public static final int TURN_LIMIT = 100;
     private PieceFactory factory;
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
-    private String winner;
-
     private int currentTurn;
-    private String currentPlayer;
+    private String currentPlayer, player1, player2;
     private boolean isGameOver;
-    private String player1, player2;
-    
     private Piece[][] board;
 
+    // Constructor
     public GameBoard() {
         board = new Piece[ROWS][COLUMNS];
         remainingBluePieces = remainingRedPieces = 10;
-        factory = new PieceFactory();
+        factory = PieceFactory.getInstance();
         initializeBoard();
     }
-    
+
+    // Initialize the board with pieces
     public void initializeBoard() {
         resetBoard();
         // Initialize board with RAM pieces
@@ -43,15 +41,24 @@ public class GameBoard {
 
         redSauPosition = new Position(2, 0);
         blueSauPosition = new Position(2, ROWS - 1);
-        winner = "";
-        currentTurn = 0;
+        currentTurn = 1;
         currentPlayer = player1 = "BLUE";
         player2 = "RED";
         isGameOver = false;
     }
 
+    // Getters methods
     public String getCurrentPlayer() {
         return currentPlayer;
+    }
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+    public int getCurrentTurn() {
+        return currentTurn;
+    }
+    public void incrementCurrentTurn() {
+        currentTurn++;
     }
 
     public boolean isEmpty(int x, int y) {
@@ -125,35 +132,6 @@ public class GameBoard {
         }
     }
 
-    // Keep track of Sau piece position
-    public void setSauPosition(Position position, String color) {
-        if (color.equals("RED")) {
-            redSauPosition = position;
-        } else {
-            blueSauPosition = position;
-        }
-    }
-    public Position getSauPosition(String color) {
-        return color.equals("RED") ? redSauPosition : blueSauPosition;
-    }
-
-    // Check if the Sau piece has been captured
-    public boolean isSauCaptured(String color) {
-        int x, y;
-        if (color.equals("RED")) {
-            x = redSauPosition.getX();
-            y = redSauPosition.getY();
-        } else {
-            x = blueSauPosition.getX();
-            y = blueSauPosition.getY();
-        }
-        return !board[y][x].getType().equals("SAU");
-    }
-
-    public void setWinner(String w) {
-        winner = w;
-    }
-
     // Save board state as a 2D String array
     public ArrayList<String> saveBoardState() {
         ArrayList<String> boardState = new ArrayList<>();
@@ -184,6 +162,30 @@ public class GameBoard {
         }
     }
 
+    // Logic for determining the winner
+    // Keep track of Sau piece position
+    public void setSauPosition(Position position, String color) {
+        if (color.equals("RED")) {
+            redSauPosition = position;
+        } else {
+            blueSauPosition = position;
+        }
+    }
+
+    // Check if the Sau piece has been captured
+    public boolean isSauCaptured(String color) {
+        int x, y;
+        if (color.equals("RED")) {
+            x = redSauPosition.getX();
+            y = redSauPosition.getY();
+        } else {
+            x = blueSauPosition.getX();
+            y = blueSauPosition.getY();
+        }
+        return !board[y][x].getType().equals("SAU");
+    }
+
+    // Determine the winner based on the win conditions
     public String determineWinConditions() {
         isGameOver = true;
         if (currentTurn >= TURN_LIMIT) {
@@ -203,10 +205,6 @@ public class GameBoard {
 
         isGameOver = false;
         return "";
-    }
-
-    public boolean isGameOver() {
-        return isGameOver;
     }
 
     // Switch turns between players
@@ -229,6 +227,7 @@ public class GameBoard {
         return validMoves;
     }
 
+    // Check if the straight path is blocked
     public boolean isStraightPathBlocked(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -256,6 +255,7 @@ public class GameBoard {
         return false;
     }
 
+    // Check if the diagonal path is blocked
     public boolean isDiagonalPathBlocked(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -278,7 +278,9 @@ public class GameBoard {
         return false;
     }
 
-    public ArrayList<Position> transformPiece() {
+    // Logic for transforming Tor and Xor pieces
+    // Get all Tor and Xor pieces
+    public ArrayList<Position> getTorXorPosition() {
         ArrayList<Position> transformedPieces = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {

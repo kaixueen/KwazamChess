@@ -30,6 +30,7 @@ public class GameView {
     private JPanel menuWrapper = new JPanel(new BorderLayout());
     private JButton menu;
     private JLabel turnLabel;
+    private JLabel turnNumberLabel;
     private JButton[][] board = new JButton[8][5];
     public static final String IMAGE_PATH="src/Images/";
 
@@ -101,6 +102,12 @@ public class GameView {
         menuWrapper.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Add margin to the wrapper
         menuWrapper.add(menu, BorderLayout.CENTER);
         footerPanel.add(menuWrapper, BorderLayout.WEST);
+
+        turnNumberLabel = new JLabel("Turn: 1");
+        turnNumberLabel.setFont(TURN_FONT);
+        turnNumberLabel.setForeground(Color.WHITE);
+        turnNumberLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        footerPanel.add(turnNumberLabel, BorderLayout.CENTER);
 
         turnLabel = new JLabel("Now is Blue Turn!");
         turnLabel.setForeground(Color.BLUE);
@@ -369,9 +376,10 @@ public class GameView {
         }
     }
 
-    public void updateTurn(String player) {
+    public void updateTurn(String player, int turn) {
         turnLabel.setText("Now is " + player + " Turn!");
         turnLabel.setForeground(player.equals("RED") ? Color.RED : Color.BLUE);
+        turnNumberLabel.setText("Turn: " + turn);
     }
 
     public void addPieceListener(MouseAdapter listener) {
@@ -443,7 +451,6 @@ public class GameView {
             for (MouseListener listener : button.getMouseListeners()) {
                 button.removeMouseListener(listener);
             }
-
             // Add the new listener
             button.addMouseListener(newListener);
         }
@@ -454,7 +461,13 @@ public class GameView {
         for (Position position : positions) {
             int x = position.getX();
             int y = position.getY();
-            board[y][x].removeMouseListener(board[y][x].getMouseListeners()[0]);
+            JButton button = board[y][x];
+
+            // Remove all MoveListener instances
+            for (MouseListener listener : button.getMouseListeners()) {
+                button.removeMouseListener(listener);
+            }
+            // Add the new listener
             board[y][x].addMouseListener(oriListener);
         }
     }
@@ -465,7 +478,7 @@ public class GameView {
         menu.addButtonsListener(slistener, llistener, rlistener);
     }
 
-    public void transformPiece(Position transformedPiece) {
+    public void transformPieceAt(Position transformedPiece) {
         int x = transformedPiece.getX();
         int y = transformedPiece.getY();
         String icon = board[y][x].getActionCommand();

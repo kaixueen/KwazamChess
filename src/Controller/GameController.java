@@ -15,7 +15,6 @@ public class GameController {
     private GameBoard gameBoard;
     private ArrayList<Piece> selectedPieces;
     private ArrayList<Position> possibleMoves;
-    private int currentTurn;
 
     public GameController(GameView gameView, GameBoard gameBoard) {
         this.gameView = gameView;
@@ -23,8 +22,6 @@ public class GameController {
         selectedPieces = new ArrayList<>();
         gameView.addPieceListener(new PieceListener(this));
         gameView.addMenuListener(new MenuListener());
-
-        currentTurn = 1;
     }
 
     private class PieceListener extends MouseAdapter {
@@ -74,7 +71,7 @@ public class GameController {
                 selectedPieces.remove(selectedPiece);
                 gameView.pieceOnClick(position);
                 possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
-                gameView.removeMoveListener(possibleMoves, new MoveListener(this));
+                gameView.removeMoveListener(possibleMoves, new PieceListener(this));
                 gameView.unhighlightPossibleMoves(possibleMoves);
             } else {
                 // Select the piece
@@ -124,16 +121,16 @@ public class GameController {
         // Add a delay before flipping the board
         Timer timer = new Timer(800, e -> {
             gameView.flipBoard(); // Flip the board after 1 second
-            if (currentTurn % 4 == 0) {
-                ArrayList<Position> transformedPieces = gameBoard.transformPiece();
+            if (gameBoard.getCurrentTurn() % 4 == 0) {
+                ArrayList<Position> transformedPieces = gameBoard.getTorXorPosition();
                 for (Position pos : transformedPieces) {
                     gameBoard.transformPieceAt(pos);
-                    gameView.transformPiece(pos);
+                    gameView.transformPieceAt(pos);
                 }
             }
             gameBoard.switchTurn();
-            gameView.updateTurn(gameBoard.getCurrentPlayer());
-            currentTurn++;
+            gameView.updateTurn(gameBoard.getCurrentPlayer(), (gameBoard.getCurrentTurn() + 1) / 2);
+
         });
         timer.setRepeats(false); // Configure the timer
         timer.start();           // Start the timer
@@ -207,7 +204,6 @@ public class GameController {
                 gameView.flipBoard();
             gameBoard.initializeBoard();
             gameView.initPosition();
-            currentTurn = 1;
             SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
