@@ -1,26 +1,13 @@
-// Todo:
-// 1. Add flip board feature (done)
-// 2. Add effect when a piece is chosen, e.g. highlight the piece (done)
-// 3. Add effect to show all the moves that a piece can make, e.g. change the valid position background color
-// 4. Maybe enhance a bit menu interface?
-// 5. Some effects or message when the game is over (red win/blue win/draw)
-// 6. Add a Restart button when the game is over (done)
-// 7. Add removePiece() method to remove a piece from the board (done)
-// 8. Add addPiece() method to add a piece to the board (done)
-// 9. Add a surrender button?
 package View;
 
-import Controller.GameController;
-import Model.Position;
 
+import Model.Position;
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.*;
 import java.util.ArrayList;
 
 // Manage game GUI (board, pieces)
@@ -44,16 +31,16 @@ public class GameView {
     private JButton menu;
     private JLabel turnLabel;
     private JButton[][] board = new JButton[8][5];
-    public static String IMAGE_PATH="src/Images/";
+    public static final String IMAGE_PATH="src/Images/";
 
     private boolean isFlipped;
     private boolean isEnlarged;
     private int enlargedButtonX, enlargedButtonY;
 
     // Font setup
-    private Font titleFont = new Font("Lucida Calligraphy", Font.BOLD, 50);
-    private Font turnFont = new Font("Lucida Calligraphy", Font.BOLD, 30);
-    private Font menuFont = new Font("Lucida Calligraphy", Font.BOLD, 20);
+    public static final Font TITLE_FONT = new Font("Lucida Calligraphy", Font.BOLD, 50);
+    public static final Font TURN_FONT = new Font("Lucida Calligraphy", Font.BOLD, 30);
+    public static final Font MENU_FONT = new Font("Lucida Calligraphy", Font.BOLD, 20);
 
     // Constructor
     public GameView() {
@@ -66,7 +53,7 @@ public class GameView {
         // Header Panel
         textLabel.setBackground(Color.BLACK);
         textLabel.setForeground(Color.WHITE);
-        textLabel.setFont(titleFont);
+        textLabel.setFont(TITLE_FONT);
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setText("Kwazam Chess");
         textLabel.setOpaque(true);
@@ -106,7 +93,7 @@ public class GameView {
 
         // Footer Panel
         menu = new JButton("Menu");
-        menu.setFont(menuFont);
+        menu.setFont(MENU_FONT);
         menu.setBackground(Color.WHITE);
 
         // To make the button has margin and not too close to the edge
@@ -117,7 +104,7 @@ public class GameView {
 
         turnLabel = new JLabel("Now is Blue Turn!");
         turnLabel.setForeground(Color.BLUE);
-        turnLabel.setFont(turnFont);
+        turnLabel.setFont(TURN_FONT);
         turnLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         footerPanel.add(turnLabel, BorderLayout.EAST);
         footerPanel.setPreferredSize(new Dimension(boardWidth, footerHeight));

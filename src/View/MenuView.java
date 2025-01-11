@@ -9,11 +9,12 @@ import java.io.File;
 import java.io.IOException;
 
 import static View.GameView.IMAGE_PATH;
+import static View.GameView.MENU_FONT;
 
 // Manage Menu GUI
 public class MenuView extends JFrame {
-    private Font menuFont = new Font("Lucida Calligraphy", Font.BOLD, 20);
     private JButton saveButton, loadButton, restartButton;
+    private JPanel topPanel, bottomPanel;
 
     // Constructor
     public MenuView() {
@@ -25,7 +26,7 @@ public class MenuView extends JFrame {
         setLayout(new BorderLayout()); // Main layout
 
         // Create top panel for the image
-        JPanel topPanel = new JPanel();
+        topPanel = new JPanel();
         topPanel.setBackground(Color.WHITE);
 
         // Add image to top panel
@@ -39,7 +40,7 @@ public class MenuView extends JFrame {
         }
 
         // Create bottom panel for the buttons
-        JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10)); // Three buttons in one row
+        bottomPanel = new JPanel(new GridLayout(1, 3, 10, 10)); // Three buttons in one row
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin around the buttons
         bottomPanel.setBackground(Color.WHITE);
 
@@ -48,9 +49,9 @@ public class MenuView extends JFrame {
         loadButton = new JButton("Load");
         restartButton = new JButton("Restart");
 
-        saveButton.setFont(menuFont);
-        loadButton.setFont(menuFont);
-        restartButton.setFont(menuFont);
+        saveButton.setFont(MENU_FONT);
+        loadButton.setFont(MENU_FONT);
+        restartButton.setFont(MENU_FONT);
 
         saveButton.setBackground(new Color(102, 205, 170));   // Medium aquamarine
         loadButton.setBackground(new Color(135, 206, 250));   // Sky blue

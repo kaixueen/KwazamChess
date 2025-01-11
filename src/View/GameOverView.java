@@ -9,39 +9,46 @@ import java.io.File;
 import java.io.IOException;
 
 import static View.GameView.IMAGE_PATH;
+import static View.GameView.MENU_FONT;
 
-public class RedWinView extends JFrame {
-    private Font menuFont = new Font("Lucida Calligraphy", Font.BOLD, 20);
+public class GameOverView extends JFrame {
     private JButton restartButton;
+    private JPanel topPanel;
+    private JPanel bottomPanel;
+    private JLabel picLabel;
 
-    public RedWinView(ActionListener restartListener) {
-        setTitle("Congratulations! Red wins!");
+    public GameOverView(String winner, ActionListener restartListener) {
+        if (winner.equals("DRAW")) {
+            setTitle("It's a draw!");
+        } else {
+            setTitle("Congratulations! " + winner + " wins!");
+        }
         setSize(400, 300);
         setLocationRelativeTo(null); // Center the frame
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout()); // Main layout
 
         // Create top panel for the image
-        JPanel topPanel = new JPanel();
+        topPanel = new JPanel();
         topPanel.setBackground(Color.WHITE);
 
         try {
-            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + "RED_WIN.jpg"));
+            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + winner + ".jpg"));
             Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
-            JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
+            picLabel = new JLabel(new ImageIcon(scaledImage));
             topPanel.add(picLabel);
         } catch (IOException ex) {
             System.out.println("Image not found");
         }
 
-        JPanel bottomPanel = new JPanel();
+        bottomPanel = new JPanel();
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add margin around the buttons
         bottomPanel.setBackground(Color.WHITE);
 
         restartButton = new JButton("Restart");
-        restartButton.setFont(menuFont);
-        restartButton.setBackground(Color.BLACK);
-        restartButton.setForeground(Color.WHITE);
+        restartButton.setFont(MENU_FONT);
+        restartButton.setBackground(Color.WHITE);
+        restartButton.setForeground(Color.BLACK);
         restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         restartButton.addActionListener(restartListener);
         bottomPanel.add(restartButton);
