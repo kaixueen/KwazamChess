@@ -57,9 +57,6 @@ public class GameBoard {
     public int getCurrentTurn() {
         return currentTurn;
     }
-    public void incrementCurrentTurn() {
-        currentTurn++;
-    }
 
     public boolean isEmpty(int x, int y) {
         if (!isInBounds(x, y)) {
@@ -132,6 +129,7 @@ public class GameBoard {
         }
     }
 
+    //Load aad save board state
     // Save board state as a 2D String array
     public ArrayList<String> saveBoardState() {
         ArrayList<String> boardState = new ArrayList<>();
@@ -146,8 +144,11 @@ public class GameBoard {
             }
             boardState.add("\n");
         }
+        boardState.add("Current Turn: " + currentTurn + "\n");
+        boardState.add("Current Player: " + currentPlayer + "\n");
         return boardState;
     }
+
     // Load board state from a file
     public void loadBoardState(String[][] boardState) {
         resetBoard();
@@ -157,9 +158,16 @@ public class GameBoard {
                     String color = boardState[row][col].substring(0, 1).equals("R") ? "RED" : "BLUE";
                     String type = boardState[row][col].substring(1);
                     board[row][col] = factory.createPiece(type, color, col, row);
+                    if (boardState[row][col].equals("RSAU") || boardState[row][col].equals("BSAU")) {
+                        setSauPosition(new Position(col, row), color);
+                    }
                 }
             }
         }
+
+
+        currentTurn = Integer.parseInt(boardState[boardState.length - 2][2]);
+        currentPlayer = boardState[boardState.length - 1][2];
     }
 
     // Logic for determining the winner

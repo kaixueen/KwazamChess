@@ -10,6 +10,9 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import static Model.GameBoard.COLUMNS;
+import static Model.GameBoard.ROWS;
+
 // Manage game GUI (board, pieces)
 public class GameView {
     final int headerHeight = 70;
@@ -31,7 +34,7 @@ public class GameView {
     private JButton menu;
     private JLabel turnLabel;
     private JLabel turnNumberLabel;
-    private JButton[][] board = new JButton[8][5];
+    private JButton[][] board = new JButton[ROWS][COLUMNS];
     public static final String IMAGE_PATH="src/Images/";
 
     private boolean isFlipped;
@@ -71,15 +74,15 @@ public class GameView {
         frame.add(centerPanel, BorderLayout.CENTER);
 
         // Board Panel
-        boardPanel.setLayout(new GridLayout(8, 5, 1, 1));
-        int buttonSize = 640 / 8; // Ensure buttons are square
-        boardPanel.setPreferredSize(new Dimension(buttonSize * 5 - 5, buttonSize * 8 - 8));
+        boardPanel.setLayout(new GridLayout(ROWS, COLUMNS, 1, 1));
+        int buttonSize = 640 / ROWS; // Ensure buttons are square
+        boardPanel.setPreferredSize(new Dimension(buttonSize * COLUMNS - COLUMNS, buttonSize * ROWS - ROWS));
         boardPanel.setBackground(Color.BLACK);
         centerPanel.add(boardPanel, BorderLayout.CENTER);
         centerPanel.setBackground(Color.darkGray);
 
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 5; c++) {
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLUMNS; c++) {
                 JButton square = new JButton();
                 square.setPreferredSize(new Dimension(buttonSize, buttonSize));
                 if ((r + c) % 2 == 0) {
@@ -128,84 +131,17 @@ public class GameView {
         isEnlarged = false;
         enlargedButtonX = enlargedButtonY = -1;
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
-                switch (i) {
-                    case 0:
-                        switch (j) {
-                            case 0:
-                                // board[i][j].setIcon(RedTor);
-                                setIcon(board[i][j], "RTOR");
-                                break;
+        // Initialize board with RAM pieces
+        for (int col = 0; col < COLUMNS; col++) {
+            setIcon(board[1][col], "RRAM");
+            setIcon(board[ROWS-2][col], "BRAM");
+        }
 
-                            case 1:
-                                // board[i][j].setIcon(RedBiz);
-                                setIcon(board[i][j], "RBIZ");
-                                break;
-
-                            case 2:
-                                // board[i][j].setIcon(RedSau);
-                                setIcon(board[i][j], "RSAU");
-                                break;
-
-                            case 3:
-                                // board[i][j].setIcon(RedBiz);
-                                setIcon(board[i][j], "RBIZ");
-                                break;
-
-                            case 4:
-                                // board[i][j].setIcon(RedXor);
-                                setIcon(board[i][j], "RXOR");
-                                break;
-                        }
-
-                        break;
-
-                    case 1:
-                        // board[i][j].setIcon(RedRam);
-                        setIcon(board[i][j], "RRAM");
-                        break;
-
-                    case 6:
-                        // board[i][j].setIcon(BlueRam);
-                        setIcon(board[i][j], "BRAM");
-                        break;
-
-                    case 7:
-                        switch (j) {
-
-                            case 0:
-                                // board[i][j].setIcon(BlueXor);
-                                setIcon(board[i][j], "BXOR");
-                                break;
-
-                            case 1:
-                                // board[i][j].setIcon(BlueBiz);
-                                setIcon(board[i][j], "BBIZ");
-                                break;
-
-                            case 2:
-                                // board[i][j].setIcon(BlueSau);
-                                setIcon(board[i][j], "BSAU");
-                                break;
-
-                            case 3:
-                                // board[i][j].setIcon(BlueBiz);
-                                setIcon(board[i][j], "BBIZ");
-                                break;
-
-                            case 4:
-                                // board[i][j].setIcon(BlueTor);
-                                setIcon(board[i][j], "BTOR");
-                                break;
-                        }
-                        break;
-
-                    default:
-                        board[i][j].setIcon(null);
-                        break;
-                }
-            }
+        // Initialize board with other pieces
+        String[] firstRowPieces = "TOR BIZ SAU BIZ XOR".split(" ");
+        for (int col = 0; col < COLUMNS; col++) {
+            setIcon(board[0][col], "R" + firstRowPieces[col]);
+            setIcon(board[ROWS-1][col], "B" + firstRowPieces[COLUMNS-col-1]);
         }
     }
 
@@ -237,8 +173,8 @@ public class GameView {
 
         if (!isFlipped) {
             // Flip: Display bottom-to-top and right-to-left
-            for (int r = 7; r >= 0; r--) {
-                for (int c = 4; c >= 0; c--) {
+            for (int r = ROWS-1; r >= 0; r--) {
+                for (int c = COLUMNS-1; c >= 0; c--) {
                     board[r][c].setIcon(rotateIcon((ImageIcon) board[r][c].getIcon()));
                     boardPanel.add(board[r][c]); // Add buttons in flipped order
                 }
@@ -246,8 +182,8 @@ public class GameView {
             isFlipped = true; // Mark board as flipped
         } else {
             // Restore: Display top-to-bottom and left-to-right
-            for (int r = 0; r < 8; r++) {
-                for (int c = 0; c < 5; c++) {
+            for (int r = 0; r < ROWS; r++) {
+                for (int c = 0; c < COLUMNS; c++) {
                     board[r][c].setIcon(rotateIcon((ImageIcon) board[r][c].getIcon()));
                     boardPanel.add(board[r][c]); // Add buttons in original order
                 }
@@ -257,6 +193,17 @@ public class GameView {
 
         boardPanel.revalidate(); // Refresh the layout
         boardPanel.repaint();    // Repaint the panel
+    }
+
+    public void clearBoard() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                setIcon(board[i][j], "null");
+            }
+        }
+        turnNumberLabel.setText("Turn: 1");
+        boardPanel.revalidate();
+        boardPanel.repaint();
     }
 
     public ImageIcon rotateIcon(ImageIcon icon){
@@ -279,44 +226,20 @@ public class GameView {
     }
 
     public void loadGame(String[][] state) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
-                switch (state[i][j]) {
-                    case "RTOR":
-                        setIcon(board[i][j], "RTOR");
-                        break;
-                    case "RBIZ":
-                        setIcon(board[i][j], "RBIZ");
-                        break;
-                    case "RSAU":
-                        setIcon(board[i][j], "RSAU");
-                        break;
-                    case "RRAM":
-                        setIcon(board[i][j], "RRAM");
-                        break;
-                    case "RXOR":
-                        setIcon(board[i][j], "RXOR");
-                        break;
-                    case "BTOR":
-                        setIcon(board[i][j], "BTOR");
-                        break;
-                    case "BBIZ":
-                        setIcon(board[i][j], "BBIZ");
-                        break;
-                    case "BSAU":
-                        setIcon(board[i][j], "BSAU");
-                        break;
-                    case "BRAM":
-                        setIcon(board[i][j], "BRAM");
-                        break;
-                    case "BXOR":
-                        setIcon(board[i][j], "BXOR");
-                        break;
-                    default:
-                        setIcon(board[i][j], "null");
-                        break;
+        clearBoard();
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (state[i][j].equals("____")) {
+                    setIcon(board[i][j], "null");
+                } else {
+                    setIcon(board[i][j], state[i][j]);
                 }
             }
+        }
+        turnNumberLabel.setText("Turn: " + state[state.length-2][2]);
+        if (state[state.length-1][2].equals("RED")) {
+            isFlipped = false;
+            flipBoard();
         }
         boardPanel.revalidate();
         boardPanel.repaint();
@@ -383,16 +306,16 @@ public class GameView {
     }
 
     public void addPieceListener(MouseAdapter listener) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
                 board[i][j].addMouseListener(listener);
             }
         }
     }
 
     public void removePieceListener() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
                 JButton button = board[i][j];
                 // Iterate over all listeners attached to the button
                 for (MouseListener listener : button.getMouseListeners()) {

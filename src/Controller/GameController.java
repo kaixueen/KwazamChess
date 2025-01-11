@@ -9,6 +9,9 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
+import static Model.GameBoard.COLUMNS;
+import static Model.GameBoard.ROWS;
+
 // Process user input and manage game states
 public class GameController {
     private GameView gameView;
@@ -65,22 +68,20 @@ public class GameController {
             selectedPieces.clear();
         }
 
-        if (selectedPiece != null) {
-            // If the selected piece is already selected, unselect it
-            if(!selectedPieces.isEmpty() && selectedPieces.getFirst() == selectedPiece) {
-                selectedPieces.remove(selectedPiece);
-                gameView.pieceOnClick(position);
-                possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
-                gameView.removeMoveListener(possibleMoves, new PieceListener(this));
-                gameView.unhighlightPossibleMoves(possibleMoves);
-            } else {
-                // Select the piece
-                selectedPieces.add(selectedPiece);
-                gameView.pieceOnClick(position);
-                possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
-                gameView.addMoveListener(possibleMoves, new MoveListener(this));
-                gameView.highlightPossibleMoves(possibleMoves, gameBoard.getCurrentPlayer());
-            }
+        // If the selected piece is already selected, unselect it
+        if(!selectedPieces.isEmpty() && selectedPieces.getFirst() == selectedPiece) {
+            selectedPieces.remove(selectedPiece);
+            gameView.pieceOnClick(position);
+            possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
+            gameView.removeMoveListener(possibleMoves, new PieceListener(this));
+            gameView.unhighlightPossibleMoves(possibleMoves);
+        } else {
+            // Select the piece
+            selectedPieces.add(selectedPiece);
+            gameView.pieceOnClick(position);
+            possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
+            gameView.addMoveListener(possibleMoves, new MoveListener(this));
+            gameView.highlightPossibleMoves(possibleMoves, gameBoard.getCurrentPlayer());
         }
     }
 
@@ -134,7 +135,6 @@ public class GameController {
         });
         timer.setRepeats(false); // Configure the timer
         timer.start();           // Start the timer
-
     }
 
     public void clearMoveListeners() {
@@ -159,7 +159,7 @@ public class GameController {
                 File file = fileChooser.getSelectedFile();
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     int count = 0;
-                    String[][] gameState = new String[8][5];
+                    String[][] gameState = new String[ROWS+2][COLUMNS];
                     String line;
                     String pieces[];
                     while ((line = reader.readLine()) != null) {
@@ -175,6 +175,7 @@ public class GameController {
                     JOptionPane.showMessageDialog(null, "Error loading game: " + ie.getMessage());
                 }
             }
+            SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
 
@@ -194,12 +195,14 @@ public class GameController {
                     JOptionPane.showMessageDialog(null, "Error saving game: " + ie.getMessage());
                 }
             }
+            SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
 
     private class RestartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            gameView.clearBoard();
             if (gameView.isFlipped())
                 gameView.flipBoard();
             gameBoard.initializeBoard();
