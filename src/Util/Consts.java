@@ -18,6 +18,9 @@ public final class Consts {
     public static final int BOARD_WIDTH = 800;
     public static final int BOARD_HEIGHT = 800;
 
+    public static String PLAYER1 = "BLUE";
+    public static String PLAYER2 = "RED";
+
     public static final Color BLUE_TURN_HOVER = new Color(64, 223, 239);
     public static final Color RED_TURN_HOVER = new Color(231, 142, 169);
     public static final Color BLUE_TURN_POSSIBLE_MOVE = new Color(205, 193, 255);

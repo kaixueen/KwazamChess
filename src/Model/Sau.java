@@ -13,14 +13,13 @@ public class Sau extends Piece {
         int toY = to.getY();
         int dx = Math.abs(fromX - toX);
         int dy = Math.abs(fromY - toY);
-        String currentColor = getColor();
 
         // Ensure the distance between the two positions is 1
         if ((dx == 1 && dy == 1) || (dx == 0 && dy == 1) || (dx == 1 && dy == 0)) {
             // Ensure the destination position is empty or contains an opponent's piece
             if (board.isEmpty(toX, toY)) {
                 return true;
-            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(new Position(toX, toY)).getColor().equals(currentColor)) {
+            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(new Position(toX, toY)).getColor().equals(player)) {
                 return true;
             }
         }

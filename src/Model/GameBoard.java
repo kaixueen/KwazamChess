@@ -9,7 +9,7 @@ public class GameBoard {
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
     private int currentTurn;
-    private String currentPlayer, player1, player2;
+    private String currentPlayer;
     private boolean isGameOver;
     private Piece[][] board;
 
@@ -40,8 +40,7 @@ public class GameBoard {
         redSauPosition = new Position(2, 0);
         blueSauPosition = new Position(2, ROWS - 1);
         currentTurn = 1;
-        currentPlayer = player1 = "BLUE";
-        player2 = "RED";
+        currentPlayer = PLAYER1;
         isGameOver = false;
     }
 
@@ -56,6 +55,7 @@ public class GameBoard {
         return currentTurn;
     }
 
+    // Check if a position is empty
     public boolean isEmpty(int x, int y) {
         if (!isInBounds(x, y)) {
             return false; // Out of bounds
@@ -63,20 +63,21 @@ public class GameBoard {
         return board[y][x] == null;
     }
 
+    // Check if a position is within the board
     public boolean isInBounds(int x, int y) {
         return y >= 0 && y < ROWS && x >= 0 && x < COLUMNS;
     }
 
+    // Get piece at a certain position
     public Piece getPieceAt(Position position) {
         int x = position.getX();
         int y = position.getY();
         if (isInBounds(x, y) && !isEmpty(x, y)) {
-            Piece piece = board[y][x];
-            return piece;
+            return board[y][x];
         }
         return null;
     }
-
+    // Remove piece at a certain position
     public void removePieceAt(int x, int y) {
         if (isInBounds(x, y)) {
             if (board[y][x].getColor().equals("RED")) {
@@ -87,7 +88,7 @@ public class GameBoard {
             board[y][x] = null;
         }
     }
-
+    // Move piece to a certain position
     public void movePieceTo(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -100,9 +101,11 @@ public class GameBoard {
                 board[fromY][fromX] = null;
 
                 piece.setPosition(to);
+                // Check if the piece is a Sau (for determining game over)
                 if (piece.getType().equals("SAU")) {
                     setSauPosition(to, piece.getColor());
                 }
+                // Check if the piece is a Ram (to detect the moving direction)
                 if (piece.getType().equals("RAM") && ((toY == 0 && piece.getColor().equals("BLUE")) || (toY == ROWS - 1 && piece.getColor().equals("RED")))) {
                     piece.setMovingForward(false);
                     piece.setIconNeedToFlip(true);
@@ -113,7 +116,7 @@ public class GameBoard {
             }
         }
     }
-
+    // Capture piece at a certain position
     public void capturePiece(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -123,107 +126,6 @@ public class GameBoard {
             removePieceAt(toX, toY);
             movePieceTo(from, to);
         }
-    }
-
-    // Reset board with empty pieces
-    public void resetBoard() {
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                board[row][col] = null;
-            }
-        }
-    }
-
-    //Load aad save board state
-    // Save board state as a 2D String array
-    public ArrayList<String> saveBoardState() {
-        ArrayList<String> boardState = new ArrayList<>();
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                if (isEmpty(col, row)) {
-                    boardState.add("____ ");
-                } else {
-                    // Store piece as RRAM, BSAU, etc.
-                    boardState.add(board[row][col].getColor().charAt(0) + board[row][col].getType() + " ");
-                }
-            }
-            boardState.add("\n");
-        }
-        boardState.add("Current Turn: " + currentTurn + "\n");
-        boardState.add("Current Player: " + currentPlayer + "\n");
-        return boardState;
-    }
-
-    // Load board state from a file
-    public void loadBoardState(String[][] boardState) {
-        resetBoard();
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                if (!boardState[row][col].equals("____")) {
-                    String color = boardState[row][col].substring(0, 1).equals("R") ? "RED" : "BLUE";
-                    String type = boardState[row][col].substring(1);
-                    board[row][col] = factory.createPiece(type, color, col, row);
-                    if (boardState[row][col].equals("RSAU") || boardState[row][col].equals("BSAU")) {
-                        setSauPosition(new Position(col, row), color);
-                    }
-                }
-            }
-        }
-
-
-        currentTurn = Integer.parseInt(boardState[boardState.length - 2][2]);
-        currentPlayer = boardState[boardState.length - 1][2];
-    }
-
-    // Logic for determining the winner
-    // Keep track of Sau piece position
-    public void setSauPosition(Position position, String color) {
-        if (color.equals("RED")) {
-            redSauPosition = position;
-        } else {
-            blueSauPosition = position;
-        }
-    }
-
-    // Check if the Sau piece has been captured
-    public boolean isSauCaptured(String color) {
-        int x, y;
-        if (color.equals("RED")) {
-            x = redSauPosition.getX();
-            y = redSauPosition.getY();
-        } else {
-            x = blueSauPosition.getX();
-            y = blueSauPosition.getY();
-        }
-        return !board[y][x].getType().equals("SAU");
-    }
-
-    // Determine the winner based on the win conditions
-    public String determineWinConditions() {
-        isGameOver = true;
-        if (currentTurn >= TURN_LIMIT) {
-            if (remainingRedPieces > remainingBluePieces) {
-                return "RED";
-            } else if (remainingBluePieces > remainingRedPieces) {
-                return "BLUE";
-            } else {
-                return "DRAW";
-            }
-        }
-        if (isSauCaptured("RED")) {
-            return "BLUE";
-        } else if (isSauCaptured("BLUE")) {
-            return "RED";
-        }
-
-        isGameOver = false;
-        return "";
-    }
-
-    // Switch turns between players
-    public void switchTurn() {
-        currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
-        currentTurn++;
     }
 
     // List all valid moves for a piece
@@ -317,5 +219,104 @@ public class GameBoard {
                 board[y][x] = factory.createPiece("TOR", piece.getColor(), x, y);
             }
         }
+    }
+
+    // Reset board with empty pieces
+    public void resetBoard() {
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                board[row][col] = null;
+            }
+        }
+    }
+
+    // Logic for determining the winner
+    // Keep track of Sau piece position
+    public void setSauPosition(Position position, String color) {
+        if (color.equals("RED")) {
+            redSauPosition = position;
+        } else {
+            blueSauPosition = position;
+        }
+    }
+
+    // Check if the Sau piece has been captured
+    public boolean isSauCaptured(String color) {
+        int x, y;
+        if (color.equals("RED")) {
+            x = redSauPosition.getX();
+            y = redSauPosition.getY();
+        } else {
+            x = blueSauPosition.getX();
+            y = blueSauPosition.getY();
+        }
+        return !board[y][x].getType().equals("SAU");
+    }
+
+    // Determine the winner based on the win conditions
+    public String determineWinConditions() {
+        isGameOver = true;
+        if (currentTurn >= TURN_LIMIT) {
+            if (remainingRedPieces > remainingBluePieces) {
+                return "RED";
+            } else if (remainingBluePieces > remainingRedPieces) {
+                return "BLUE";
+            } else {
+                return "DRAW";
+            }
+        }
+        if (isSauCaptured("RED")) {
+            return "BLUE";
+        } else if (isSauCaptured("BLUE")) {
+            return "RED";
+        }
+
+        isGameOver = false;
+        return "";
+    }
+
+    // Switch turns between players
+    public void switchTurn() {
+        currentPlayer = currentPlayer.equals(PLAYER1) ? PLAYER2 : PLAYER1;
+        currentTurn++;
+    }
+
+    //Load and save board state
+    // Save board state as a 2D String array
+    public ArrayList<String> saveBoardState() {
+        ArrayList<String> boardState = new ArrayList<>();
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (isEmpty(col, row)) {
+                    boardState.add("____ ");
+                } else {
+                    // Store piece as RRAM, BSAU, etc.
+                    boardState.add(board[row][col].getColor().charAt(0) + board[row][col].getType() + " ");
+                }
+            }
+            boardState.add("\n");
+        }
+        boardState.add("Current Turn: " + currentTurn + "\n");
+        boardState.add("Current Player: " + currentPlayer + "\n");
+        return boardState;
+    }
+
+    // Load board state from a file
+    public void loadBoardState(String[][] boardState) {
+        resetBoard();
+        for (int row = 0; row < ROWS; row++) {
+            for (int col = 0; col < COLUMNS; col++) {
+                if (!boardState[row][col].equals("____")) {
+                    String color = boardState[row][col].substring(0, 1).equals("R") ? "RED" : "BLUE";
+                    String type = boardState[row][col].substring(1);
+                    board[row][col] = factory.createPiece(type, color, col, row);
+                    if (boardState[row][col].equals("RSAU") || boardState[row][col].equals("BSAU")) {
+                        setSauPosition(new Position(col, row), color);
+                    }
+                }
+            }
+        }
+        currentTurn = Integer.parseInt(boardState[boardState.length - 2][2]);
+        currentPlayer = boardState[boardState.length - 1][2];
     }
 }

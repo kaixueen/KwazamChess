@@ -13,6 +13,7 @@ public abstract class Piece {
         this.color = color;
         this.type = type;
         this.position = position;
+
         isMovingForward = true;
         isIconNeedToFlip = false;
     }

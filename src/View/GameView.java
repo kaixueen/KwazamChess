@@ -16,12 +16,11 @@ import static Util.Consts.*;
 public class GameView {
 
     private JFrame frame = new JFrame("Kwazam Chess");
-    private JLabel textLabel = new JLabel();
     private JPanel headerPanel = new JPanel();
     private JPanel centerPanel = new JPanel();
     private JPanel boardPanel = new JPanel();
     private JPanel footerPanel = new JPanel(new BorderLayout());
-    // private JPanel menuWrapper = new JPanel(new BorderLayout());
+
     private JButton menu;
     private JLabel turnLabel;
     private JLabel turnNumberLabel;
@@ -40,6 +39,7 @@ public class GameView {
         frame.setLayout(new BorderLayout());
 
         // Header Panel
+        JLabel textLabel = new JLabel();
         textLabel.setBackground(Color.BLACK);
         textLabel.setForeground(Color.WHITE);
         textLabel.setFont(TITLE_FONT);
@@ -110,6 +110,7 @@ public class GameView {
         initPosition();
     }
 
+    // Initialize the board with pieces
     public void initPosition() {
         turnLabel.setText("Now is Blue Turn!");
         turnLabel.setForeground(Color.BLUE);
@@ -131,6 +132,7 @@ public class GameView {
         }
     }
 
+    // Set the icon of a button based on the description
     public void setIcon(JButton button, String description) {
         if (description.equals("null")) {
             button.setIcon(null);
@@ -142,6 +144,7 @@ public class GameView {
         button.setActionCommand(description);
     }
 
+    // Move a piece from one position to another
     public void movePiece(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -154,6 +157,7 @@ public class GameView {
         setIcon(board[fromY][fromX], "null");
     }
 
+    // Flip the board
     public void flipBoard() {
         boardPanel.removeAll(); // Clear the board panel
 
@@ -181,23 +185,12 @@ public class GameView {
         boardPanel.repaint();    // Repaint the panel
     }
 
-    public void clearBoard() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
-                setIcon(board[i][j], "null");
-            }
-        }
-        turnNumberLabel.setText("Turn: 1");
-        boardPanel.revalidate();
-        boardPanel.repaint();
+    // Check if the board is flipped
+    public boolean isFlipped() {
+        return isFlipped;
     }
 
-//    public ImageIcon getIconAt(Position position) {
-//        int x = position.getX();
-//        int y = position.getY();
-//        return (ImageIcon) board[y][x].getIcon();
-//    }
-
+    // Rotate the icon of a button by 180 degrees
     public void rotateIcon(Position position){
         int x = position.getX();
         int y = position.getY();
@@ -220,26 +213,54 @@ public class GameView {
         board[y][x].setIcon(new ImageIcon(rotated));
     }
 
-    public void loadGame(String[][] state) {
-        clearBoard();
+    // Update the turn label
+    public void updateTurn(String player, int turn) {
+        turnLabel.setText("Now is " + player + " Turn!");
+        turnLabel.setForeground(player.equals("RED") ? Color.RED : Color.BLUE);
+        turnNumberLabel.setText("Turn: " + turn);
+    }
+
+    // Clear the board
+    public void clearBoard() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
-                if (state[i][j].equals("____")) {
-                    setIcon(board[i][j], "null");
-                } else {
-                    setIcon(board[i][j], state[i][j]);
-                }
+                setIcon(board[i][j], "null");
             }
         }
-        turnNumberLabel.setText("Turn: " + state[state.length-2][2]);
-        if (state[state.length-1][2].equals("RED")) {
-            isFlipped = false;
-            flipBoard();
-        }
+        turnNumberLabel.setText("Turn: 1");
         boardPanel.revalidate();
         boardPanel.repaint();
     }
 
+    public void transformPieceAt(Position transformedPiece) {
+        int x = transformedPiece.getX();
+        int y = transformedPiece.getY();
+        String icon = board[y][x].getActionCommand();
+
+        if (icon.equals("RTOR")) {
+            setIcon(board[y][x], "RXOR");
+        } else if (icon.equals("RXOR")) {
+            setIcon(board[y][x], "RTOR");
+        } else if (icon.equals("BTOR")) {
+            setIcon(board[y][x], "BXOR");
+        } else if (icon.equals("BXOR")) {
+            setIcon(board[y][x], "BTOR");
+        }
+    }
+
+    // Find the position of a button
+    public Position findButtonPosition(JButton btn) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (board[i][j] == btn) {
+                    return new Position(j, i);
+                }
+            }
+        }
+        return null;
+    }
+
+    // Highlight the hovered piece
     public void pieceOnHover(Position position, String player) {
         int x = position.getX();
         int y = position.getY();
@@ -247,6 +268,7 @@ public class GameView {
         Color hoverColor = player.equals("RED") ? RED_TURN_HOVER : BLUE_TURN_HOVER;
         square.setBackground(hoverColor);
     }
+    // Unhighlight the hovered piece
     public void pieceOffHover(Position position) {
         int x = position.getX();
         int y = position.getY();
@@ -257,6 +279,7 @@ public class GameView {
             square.setBackground(new Color(168, 205, 137));
         }
     }
+    // Enlarge the clicked piece
     public void pieceOnClick(Position position) {
         int x = position.getX();
         int y = position.getY();
@@ -294,12 +317,7 @@ public class GameView {
         }
     }
 
-    public void updateTurn(String player, int turn) {
-        turnLabel.setText("Now is " + player + " Turn!");
-        turnLabel.setForeground(player.equals("RED") ? Color.RED : Color.BLUE);
-        turnNumberLabel.setText("Turn: " + turn);
-    }
-
+    // Add listeners to the piece
     public void addPieceListener(MouseAdapter listener) {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -308,6 +326,7 @@ public class GameView {
         }
     }
 
+    // Remove listeners from the piece
     public void removePieceListener() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
@@ -320,21 +339,6 @@ public class GameView {
                 }
             }
         }
-    }
-
-    public void addMenuListener(ActionListener listener) {
-        menu.addActionListener(listener);
-    }
-
-    public Position findButtonPosition(JButton btn) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (board[i][j] == btn) {
-                    return new Position(j, i);
-                }
-            }
-        }
-        return null;
     }
 
     public void highlightPossibleMoves(ArrayList<Position> possibleMoves, String player) {
@@ -390,29 +394,33 @@ public class GameView {
         }
     }
 
+    // Add listener to the menu button
+    public void addMenuListener(ActionListener listener) {
+        menu.addActionListener(listener);
+    }
 
     public void clickMenu(ActionListener slistener, ActionListener llistener, ActionListener rlistener) {
         MenuView menu = new MenuView();
         menu.addButtonsListener(slistener, llistener, rlistener);
     }
 
-    public void transformPieceAt(Position transformedPiece) {
-        int x = transformedPiece.getX();
-        int y = transformedPiece.getY();
-        String icon = board[y][x].getActionCommand();
-
-        if (icon.equals("RTOR")) {
-            setIcon(board[y][x], "RXOR");
-        } else if (icon.equals("RXOR")) {
-            setIcon(board[y][x], "RTOR");
-        } else if (icon.equals("BTOR")) {
-            setIcon(board[y][x], "BXOR");
-        } else if (icon.equals("BXOR")) {
-            setIcon(board[y][x], "BTOR");
+    public void loadGame(String[][] state) {
+        clearBoard();
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if (state[i][j].equals("____")) {
+                    setIcon(board[i][j], "null");
+                } else {
+                    setIcon(board[i][j], state[i][j]);
+                }
+            }
         }
-    }
-
-    public boolean isFlipped() {
-        return isFlipped;
+        turnNumberLabel.setText("Turn: " + state[state.length-2][2]);
+        if (state[state.length-1][2].equals("RED")) {
+            isFlipped = false;
+            flipBoard();
+        }
+        boardPanel.revalidate();
+        boardPanel.repaint();
     }
 }

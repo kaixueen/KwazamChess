@@ -13,14 +13,13 @@ public class Xor extends Piece {
         int toY = to.getY();
         int dx = Math.abs(toX - fromX);
         int dy = Math.abs(toY - fromY);
-        String currentColor = getColor();
 
         // Ensure diagonal move
         if (!board.isDiagonalPathBlocked(getPosition(), to) && (dx == dy) && (dx != 0 && dy != 0)) {
             // Ensure the destination position is empty or contains an opponent's piece
             if (board.isEmpty(toX, toY)) {
                 return true;
-            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(new Position(toX, toY)).getColor().equals(currentColor)) {
+            } else if (!board.isEmpty(toX, toY) && !board.getPieceAt(new Position(toX, toY)).getColor().equals(player)) {
                 return true;
             }
         }

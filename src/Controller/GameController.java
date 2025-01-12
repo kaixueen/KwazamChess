@@ -154,6 +154,26 @@ public class GameController {
         }
     }
 
+    private class SaveListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            int returnValue = fileChooser.showSaveDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                    ArrayList<String> gameState = gameBoard.saveBoardState(); // Assume gameBoard has this method
+                    String gameStateStr = String.join("", gameState);
+                    writer.write(gameStateStr);
+                    JOptionPane.showMessageDialog(null, "Game saved successfully!");
+                } catch (IOException ie) {
+                    JOptionPane.showMessageDialog(null, "Error saving game: " + ie.getMessage());
+                }
+            }
+            SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
+        }
+    }
+
     private class LoadListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -183,26 +203,6 @@ public class GameController {
         }
     }
 
-    private class SaveListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser();
-            int returnValue = fileChooser.showSaveDialog(null);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File file = fileChooser.getSelectedFile();
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                    ArrayList<String> gameState = gameBoard.saveBoardState(); // Assume gameBoard has this method
-                    String gameStateStr = String.join("", gameState);
-                    writer.write(gameStateStr);
-                    JOptionPane.showMessageDialog(null, "Game saved successfully!");
-                } catch (IOException ie) {
-                    JOptionPane.showMessageDialog(null, "Error saving game: " + ie.getMessage());
-                }
-            }
-            SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
-        }
-    }
-
     private class RestartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -211,6 +211,7 @@ public class GameController {
                 gameView.flipBoard();
             gameBoard.initializeBoard();
             gameView.initPosition();
+            gameView.addPieceListener(new PieceListener(GameController.this));
             SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
