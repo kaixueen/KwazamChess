@@ -62,14 +62,14 @@ public class GameController {
             return;
         }
         // Unselect the first piece if the second piece is not the same as the first piece
-        if (!selectedPieces.isEmpty() && selectedPieces.getFirst() != selectedPiece) {
-            gameView.pieceOnClick(selectedPieces.getFirst().getPosition());
+        if (!selectedPieces.isEmpty() && selectedPieces.get(0) != selectedPiece) {
+            gameView.pieceOnClick(selectedPieces.get(0).getPosition());
             gameView.unhighlightPossibleMoves(possibleMoves);
             selectedPieces.clear();
         }
 
         // If the selected piece is already selected, unselect it
-        if(!selectedPieces.isEmpty() && selectedPieces.getFirst() == selectedPiece) {
+        if(!selectedPieces.isEmpty() && selectedPieces.get(0) == selectedPiece) {
             selectedPieces.remove(selectedPiece);
             gameView.pieceOnClick(position);
             possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
@@ -101,7 +101,7 @@ public class GameController {
     }
 
     public void handleMove(Position position) {
-        Piece selectedPiece = selectedPieces.getFirst();
+        Piece selectedPiece = selectedPieces.get(0);
         gameView.pieceOnClick(selectedPiece.getPosition());
         gameView.movePiece(selectedPiece.getPosition(), position);
         if (gameBoard.isEmpty(position.getX(), position.getY())) {
