@@ -1,7 +1,7 @@
 package View;
 
 
-import Model.Position;
+import Util.Position;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionListener;

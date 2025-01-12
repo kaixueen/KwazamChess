@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 public class Ram extends Piece {
     // Constructor
     public Ram(String color, Position position) {

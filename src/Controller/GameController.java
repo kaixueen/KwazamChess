@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.*;
+import Util.Position;
 import View.*;
 
 import java.awt.*;

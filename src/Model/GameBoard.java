@@ -1,17 +1,19 @@
 package Model;
 
+import Util.Position;
+
 import java.util.ArrayList;
 import static Util.Consts.*;
 
 // Manage game board
 public class GameBoard {
     private PieceFactory factory;
-    private Position redSauPosition, blueSauPosition;
-    private int remainingRedPieces, remainingBluePieces;
+    private Piece[][] board;
     private int currentTurn;
     private String currentPlayer;
     private boolean isGameOver;
-    private Piece[][] board;
+    private Position redSauPosition, blueSauPosition;
+    private int remainingRedPieces, remainingBluePieces;
 
     // Singleton instance
     private static GameBoard instance;

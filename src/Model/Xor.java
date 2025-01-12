@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 public class Xor extends Piece {
     // Constructor
     public Xor(String color, Position position) {

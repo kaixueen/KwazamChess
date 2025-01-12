@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 public class Sau extends Piece {
     // Constructor
     public Sau(String color, Position position) {

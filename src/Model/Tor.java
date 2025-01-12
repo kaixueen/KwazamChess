@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 public class Tor extends Piece{
     // Constructor
     public Tor(String color, Position position) {

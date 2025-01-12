@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 // Abstract class for all pieces
 public abstract class Piece {
     private String color;

@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 // Contain logic of piece creation
 public class PieceFactory {
     private static PieceFactory instance;

@@ -1,5 +1,7 @@
 package Model;
 
+import Util.Position;
+
 public class Biz extends Piece {
     // Constructor
     public Biz(String color, Position position) {
