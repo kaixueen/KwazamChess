@@ -2,6 +2,7 @@ package Util;
 
 import java.awt.*;
 
+// Constants used in the game
 public final class Consts {
     private Consts(){
         //this prevents even the native class from

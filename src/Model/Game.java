@@ -11,7 +11,7 @@ public class Game {
 
     // Contructor
     public Game() {
-        gameBoard = new GameBoard();
+        gameBoard = GameBoard.getInstance();
         gameView = new GameView();
         gameController = new GameController(gameView, gameBoard);
     }

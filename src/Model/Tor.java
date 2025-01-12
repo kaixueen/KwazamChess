@@ -1,10 +1,12 @@
 package Model;
 
 public class Tor extends Piece{
+    // Constructor
     public Tor(String color, Position position) {
         super(color, "TOR", position);
     }
 
+    // Determine if a piece can move to a certain position
     @Override
     public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();

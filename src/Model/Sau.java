@@ -1,10 +1,12 @@
 package Model;
 
 public class Sau extends Piece {
+    // Constructor
     public Sau(String color, Position position) {
         super(color, "SAU", position);
     }
 
+    // Determine if a piece can move to a certain position
     @Override
     public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();

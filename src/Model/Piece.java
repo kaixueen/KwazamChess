@@ -18,6 +18,25 @@ public abstract class Piece {
         isIconNeedToFlip = false;
     }
 
+    // Determine if a piece can move to a certain position
+    public abstract boolean isValidMove(GameBoard board, Position to, String player);
+
+    // Return a string representation of the piece
+    public String toString() {
+        return color.charAt(0) + type;
+    }
+
+    // Setter methods
+    public void setMovingForward(boolean isMovingForward) {
+        this.isMovingForward = isMovingForward;
+    }
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+    public void setIconNeedToFlip(boolean isIconNeedToFlip) {
+        this.isIconNeedToFlip = isIconNeedToFlip;
+    }
+
     // Getter methods
     public String getColor() {
         return color;
@@ -28,28 +47,8 @@ public abstract class Piece {
     public Position getPosition() {
         return position;
     }
-
-    // Determine if a piece can move to a certain position
-    public abstract boolean isValidMove(GameBoard board, Position to, String player);
-
-    // Return a string representation of the piece
-    public String toString() {
-        return color.charAt(0) + type;
-    }
-
-    public void setMovingForward(boolean isMovingForward) {
-        this.isMovingForward = isMovingForward;
-    }
     public boolean isMovingForward() {
         return isMovingForward;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public void setIconNeedToFlip(boolean isIconNeedToFlip) {
-        this.isIconNeedToFlip = isIconNeedToFlip;
     }
     public boolean isIconNeedToFlip() {
         return isIconNeedToFlip;

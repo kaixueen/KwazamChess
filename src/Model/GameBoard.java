@@ -13,8 +13,22 @@ public class GameBoard {
     private boolean isGameOver;
     private Piece[][] board;
 
+    // Singleton instance
+    private static GameBoard instance;
+    public static GameBoard getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        synchronized (PieceFactory.class) {
+            if (instance == null) {
+                instance = new GameBoard();
+            }
+        }
+        return instance;
+    }
+
     // Constructor
-    public GameBoard() {
+    private GameBoard() {
         board = new Piece[ROWS][COLUMNS];
         remainingBluePieces = remainingRedPieces = 10;
         factory = PieceFactory.getInstance();

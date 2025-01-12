@@ -1,10 +1,12 @@
 package Model;
 
 public class Ram extends Piece {
+    // Constructor
     public Ram(String color, Position position) {
         super(color, "RAM", position);
     }
 
+    // Determine if a piece can move to a certain position
     @Override
     public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();

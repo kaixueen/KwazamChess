@@ -17,6 +17,7 @@ public class GameOverView extends JFrame {
     private JLabel picLabel;
     private JLabel winnerLabel;
 
+    // Constructor
     public GameOverView(String winner, ActionListener restartListener) {
         // Set title based on winner
         if (winner.equals("DRAW")) {

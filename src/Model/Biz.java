@@ -1,11 +1,12 @@
 package Model;
 
 public class Biz extends Piece {
+    // Constructor
     public Biz(String color, Position position) {
         super(color, "BIZ", position);
     }
 
-
+    // Determine if a piece can move to a certain position
     @Override
     public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();

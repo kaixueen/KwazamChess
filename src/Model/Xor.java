@@ -1,10 +1,12 @@
 package Model;
 
 public class Xor extends Piece {
+    // Constructor
     public Xor(String color, Position position) {
         super(color, "XOR", position);
     }
 
+    // Determine if a piece can move to a certain position
     @Override
     public boolean isValidMove(GameBoard board, Position to, String player) {
         int fromX = getPosition().getX();
