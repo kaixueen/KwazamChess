@@ -9,8 +9,7 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import static Model.GameBoard.COLUMNS;
-import static Model.GameBoard.ROWS;
+import static Util.Consts.*;
 
 // Process user input and manage game states
 public class GameController {

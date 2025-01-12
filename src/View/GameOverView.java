@@ -8,8 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static View.GameView.IMAGE_PATH;
-import static View.GameView.MENU_FONT;
+import static Util.Consts.*;
 
 public class GameOverView extends JFrame {
     private JButton restartButton;

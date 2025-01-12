@@ -8,8 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static View.GameView.IMAGE_PATH;
-import static View.GameView.MENU_FONT;
+import static Util.Consts.*;
 
 // Manage Menu GUI
 public class MenuView extends JFrame {

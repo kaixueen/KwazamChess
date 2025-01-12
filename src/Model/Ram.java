@@ -1,7 +1,5 @@
 package Model;
 
-import static Model.GameBoard.ROWS;
-
 public class Ram extends Piece {
     public Ram(String color, Position position) {
         super(color, "RAM", position);

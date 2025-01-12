@@ -10,19 +10,10 @@ import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static Model.GameBoard.COLUMNS;
-import static Model.GameBoard.ROWS;
+import static Util.Consts.*;
 
 // Manage game GUI (board, pieces)
 public class GameView {
-    final int headerHeight = 70;
-    final int footerHeight = 70;
-    final int boardWidth = 800;
-    final int boardHeight = 800;
-    final Color blueTurnHover = new Color(64, 223, 239);
-    final Color redTurnHover = new Color(231, 142, 169);
-    final Color redTurnPossibleMove = new Color(243, 158, 96);
-    final Color blueTurnPossibleMove = new Color(205, 193, 255);
 
     private JFrame frame = new JFrame("Kwazam Chess");
     private JLabel textLabel = new JLabel();
@@ -30,26 +21,20 @@ public class GameView {
     private JPanel centerPanel = new JPanel();
     private JPanel boardPanel = new JPanel();
     private JPanel footerPanel = new JPanel(new BorderLayout());
-    private JPanel menuWrapper = new JPanel(new BorderLayout());
+    // private JPanel menuWrapper = new JPanel(new BorderLayout());
     private JButton menu;
     private JLabel turnLabel;
     private JLabel turnNumberLabel;
     private JButton[][] board = new JButton[ROWS][COLUMNS];
-    public static final String IMAGE_PATH="src/Images/";
 
     private boolean isFlipped;
     private boolean isEnlarged;
     private int enlargedButtonX, enlargedButtonY;
 
-    // Font setup
-    public static final Font TITLE_FONT = new Font("Lucida Calligraphy", Font.BOLD, 50);
-    public static final Font TURN_FONT = new Font("Lucida Calligraphy", Font.BOLD, 30);
-    public static final Font MENU_FONT = new Font("Lucida Calligraphy", Font.BOLD, 20);
-
     // Constructor
     public GameView() {
         frame.setVisible(true);
-        frame.setSize(boardWidth, boardHeight);
+        frame.setSize(BOARD_WIDTH, BOARD_HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -63,7 +48,7 @@ public class GameView {
         textLabel.setOpaque(true);
 
         headerPanel.setLayout(new BorderLayout());
-        headerPanel.setPreferredSize(new Dimension(boardWidth, headerHeight));
+        headerPanel.setPreferredSize(new Dimension(BOARD_WIDTH, HEADER_HEIGHT));
         headerPanel.add(textLabel);
         frame.add(headerPanel, BorderLayout.NORTH);
 
@@ -101,6 +86,7 @@ public class GameView {
         menu.setBackground(Color.WHITE);
 
         // To make the button has margin and not too close to the edge
+        JPanel menuWrapper = new JPanel(new BorderLayout());
         menuWrapper.setBackground(Color.BLACK);
         menuWrapper.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Add margin to the wrapper
         menuWrapper.add(menu, BorderLayout.CENTER);
@@ -117,7 +103,7 @@ public class GameView {
         turnLabel.setFont(TURN_FONT);
         turnLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         footerPanel.add(turnLabel, BorderLayout.EAST);
-        footerPanel.setPreferredSize(new Dimension(boardWidth, footerHeight));
+        footerPanel.setPreferredSize(new Dimension(BOARD_WIDTH, FOOTER_HEIGHT));
         footerPanel.setBackground(Color.BLACK);
         frame.add(footerPanel, BorderLayout.SOUTH);
 
@@ -258,7 +244,7 @@ public class GameView {
         int x = position.getX();
         int y = position.getY();
         JButton square = board[y][x];
-        Color hoverColor = player.equals("RED") ? redTurnHover : blueTurnHover;
+        Color hoverColor = player.equals("RED") ? RED_TURN_HOVER : BLUE_TURN_HOVER;
         square.setBackground(hoverColor);
     }
     public void pieceOffHover(Position position) {
@@ -356,7 +342,7 @@ public class GameView {
             int x = pos.getX();
             int y = pos.getY();
             JButton square = board[y][x];
-            Color possibleMoveColor = player.equals("RED") ? redTurnPossibleMove : blueTurnPossibleMove;
+            Color possibleMoveColor = player.equals("RED") ? RED_TURN_POSSIBLE_MOVE : BLUE_TURN_POSSIBLE_MOVE;
             square.setBackground(possibleMoveColor);
         }
     }

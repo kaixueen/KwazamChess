@@ -1,12 +1,10 @@
 package Model;
 
 import java.util.ArrayList;
+import static Util.Consts.*;
 
 // Manage game board
 public class GameBoard {
-    public static final int ROWS = 8;
-    public static final int COLUMNS = 5;
-    public static final int TURN_LIMIT = 100;
     private PieceFactory factory;
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
