@@ -2,7 +2,7 @@ import Controller.GameController;
 import Model.GameBoard;
 import View.GameView;
 
-// Manage game logic
+// Starting file
 public class KwazamChess {
     private GameBoard gameBoard;
     private GameController gameController;
