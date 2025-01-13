@@ -28,7 +28,7 @@ public class GameView {
 
     private boolean isFlipped;
     private boolean isEnlarged;
-    private int enlargedButtonX, enlargedButtonY;
+    private Position enlargedPosition;
 
     // Constructor
     public GameView() {
@@ -116,7 +116,7 @@ public class GameView {
         turnLabel.setForeground(Color.BLUE);
         isFlipped = false;
         isEnlarged = false;
-        enlargedButtonX = enlargedButtonY = -1;
+        enlargedPosition = new Position(-1, -1);
 
         // Initialize board with RAM pieces
         for (int col = 0; col < COLUMNS; col++) {
@@ -232,9 +232,9 @@ public class GameView {
         boardPanel.repaint();
     }
 
-    public void transformPieceAt(Position transformedPiece) {
-        int x = transformedPiece.getX();
-        int y = transformedPiece.getY();
+    public void transformPieceAt(Position position) {
+        int x = position.getX();
+        int y = position.getY();
         String icon = board[y][x].getActionCommand();
 
         if (icon.equals("RTOR")) {
@@ -287,7 +287,7 @@ public class GameView {
 
         // Check if there's a previously enlarged button
         if (isEnlarged) {
-            JButton enlargedButton = board[enlargedButtonY][enlargedButtonX];
+            JButton enlargedButton = board[enlargedPosition.getY()][enlargedPosition.getX()];
             ImageIcon icon = (ImageIcon) enlargedButton.getIcon();
             if (icon != null) {
                 // Restore original size
@@ -298,9 +298,9 @@ public class GameView {
             isEnlarged = false;
 
             // If clicking the same button, return without enlarging again
-            if (enlargedButtonX == x && enlargedButtonY == y) {
-                enlargedButtonX = -1;
-                enlargedButtonY = -1;
+            if (enlargedPosition.getX() == x && enlargedPosition.getY() == y) {
+                enlargedPosition.setX(-1);
+                enlargedPosition.setY(-1);
                 return;
             }
         }
@@ -312,13 +312,14 @@ public class GameView {
             Image enlargedImage = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Enlarge by 10px
             square.setIcon(new ImageIcon(enlargedImage));
             isEnlarged = true;
-            enlargedButtonX = x;
-            enlargedButtonY = y;
+            enlargedPosition.setX(x);
+            enlargedPosition.setY(y);
         }
     }
 
     // Add listeners to the piece
     public void addPieceListener(MouseAdapter listener) {
+
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 board[i][j].addMouseListener(listener);

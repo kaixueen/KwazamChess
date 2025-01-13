@@ -77,9 +77,9 @@ public class MenuView extends JFrame {
         setVisible(true);
     }
 
-    public void addButtonsListener(ActionListener saveListener, ActionListener loadListener, ActionListener restartListener) {
-        saveButton.addActionListener(saveListener);
-        loadButton.addActionListener(loadListener);
-        restartButton.addActionListener(restartListener);
+    public void addButtonsListener(ActionListener sListener, ActionListener lListener, ActionListener rListener) {
+        saveButton.addActionListener(sListener);
+        loadButton.addActionListener(lListener);
+        restartButton.addActionListener(rListener);
     }
 }

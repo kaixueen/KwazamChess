@@ -14,6 +14,7 @@ public class GameBoard {
     private boolean isGameOver;
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
+    private ArrayList<Piece> selectedPieces;
 
     // Singleton instance
     private static GameBoard instance;
@@ -34,6 +35,7 @@ public class GameBoard {
         board = new Piece[ROWS][COLUMNS];
         remainingBluePieces = remainingRedPieces = 10;
         factory = PieceFactory.getInstance();
+        selectedPieces = new ArrayList<>();
         initializeBoard();
     }
 
@@ -69,6 +71,9 @@ public class GameBoard {
     }
     public int getCurrentTurn() {
         return currentTurn;
+    }
+    public ArrayList<Piece> getSelectedPieces() {
+        return selectedPieces;
     }
 
     // Check if a position is empty
@@ -239,6 +244,7 @@ public class GameBoard {
 
     // Reset board with empty pieces
     public void resetBoard() {
+        selectedPieces.clear();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 board[row][col] = null;

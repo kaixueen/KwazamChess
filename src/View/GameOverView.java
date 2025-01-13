@@ -18,7 +18,7 @@ public class GameOverView extends JFrame {
     private JLabel winnerLabel;
 
     // Constructor
-    public GameOverView(String winner, ActionListener restartListener) {
+    public GameOverView(String winner, ActionListener rListener) {
         // Set title based on winner
         if (winner.equals("DRAW")) {
             setTitle("It's a draw!");
@@ -68,7 +68,7 @@ public class GameOverView extends JFrame {
         restartButton.setBackground(Color.BLACK);
         restartButton.setForeground(Color.WHITE);
         restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        restartButton.addActionListener(restartListener);
+        restartButton.addActionListener(rListener);
         bottomPanel.add(restartButton);
 
         // Add panels to the frame

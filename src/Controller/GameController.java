@@ -16,13 +16,13 @@ import static Util.Consts.*;
 public class GameController {
     private GameView gameView;
     private GameBoard gameBoard;
-    private ArrayList<Piece> selectedPieces;
+
     private ArrayList<Position> possibleMoves;
 
     public GameController(GameView gameView, GameBoard gameBoard) {
         this.gameView = gameView;
         this.gameBoard = gameBoard;
-        selectedPieces = new ArrayList<>();
+
         gameView.addPieceListener(new PieceListener(this));
         gameView.addMenuListener(new MenuListener());
     }
@@ -62,22 +62,22 @@ public class GameController {
             return;
         }
         // Unselect the first piece if the second piece is not the same as the first piece
-        if (!selectedPieces.isEmpty() && selectedPieces.get(0) != selectedPiece) {
-            gameView.pieceOnClick(selectedPieces.get(0).getPosition());
+        if (!gameBoard.getSelectedPieces().isEmpty() && gameBoard.getSelectedPieces().get(0) != selectedPiece) {
+            gameView.pieceOnClick(gameBoard.getSelectedPieces().get(0).getPosition());
             gameView.unhighlightPossibleMoves(possibleMoves);
-            selectedPieces.clear();
+            gameBoard.getSelectedPieces().clear();
         }
 
         // If the selected piece is already selected, unselect it
-        if(!selectedPieces.isEmpty() && selectedPieces.get(0) == selectedPiece) {
-            selectedPieces.remove(selectedPiece);
+        if(!gameBoard.getSelectedPieces().isEmpty() && gameBoard.getSelectedPieces().get(0) == selectedPiece) {
+            gameBoard.getSelectedPieces().remove(selectedPiece);
             gameView.pieceOnClick(position);
             possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
             gameView.removeMoveListener(possibleMoves, new PieceListener(this));
             gameView.unhighlightPossibleMoves(possibleMoves);
         } else {
             // Select the piece
-            selectedPieces.add(selectedPiece);
+            gameBoard.getSelectedPieces().add(selectedPiece);
             gameView.pieceOnClick(position);
             possibleMoves = gameBoard.getPossibleMoves(selectedPiece);
             gameView.addMoveListener(possibleMoves, new MoveListener(this));
@@ -101,7 +101,7 @@ public class GameController {
     }
 
     public void handleMove(Position position) {
-        Piece selectedPiece = selectedPieces.get(0);
+        Piece selectedPiece = gameBoard.getSelectedPieces().get(0);
         gameView.pieceOnClick(selectedPiece.getPosition());
         gameView.movePiece(selectedPiece.getPosition(), position);
         if (gameBoard.isEmpty(position.getX(), position.getY())) {
@@ -115,7 +115,7 @@ public class GameController {
             selectedPiece.setIconNeedToFlip(false);
         }
 
-        selectedPieces.clear();
+        gameBoard.getSelectedPieces().clear();
         clearMoveListeners();
         String winner = gameBoard.determineWinConditions();
         if (gameBoard.isGameOver()) {
@@ -183,6 +183,13 @@ public class GameController {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    if (!gameBoard.getSelectedPieces().isEmpty()) {
+                        handlePieceSelection(gameBoard.getSelectedPieces().get(0).getPosition());
+                        gameBoard.getSelectedPieces().clear();
+                    }
+
+                    gameView.removePieceListener();
+
                     int count = 0;
                     String[][] gameState = new String[ROWS+2][COLUMNS];
                     String line;
@@ -194,6 +201,7 @@ public class GameController {
                         count++;
                     }
                     gameView.loadGame(gameState);
+                    gameView.addPieceListener(new PieceListener(GameController.this));
                     gameBoard.loadBoardState(gameState);
                     JOptionPane.showMessageDialog(null, "Game loaded successfully!");
                 } catch (IOException ie) {
@@ -207,9 +215,16 @@ public class GameController {
     private class RestartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (!gameBoard.getSelectedPieces().isEmpty()) {
+                handlePieceSelection(gameBoard.getSelectedPieces().get(0).getPosition());
+                gameBoard.getSelectedPieces().clear();
+            }
+
             gameView.clearBoard();
+            gameView.removePieceListener();
             if (gameView.isFlipped())
                 gameView.flipBoard();
+
             gameBoard.initializeBoard();
             gameView.initPosition();
             gameView.addPieceListener(new PieceListener(GameController.this));
