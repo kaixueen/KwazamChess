@@ -342,6 +342,7 @@ public class GameView {
         }
     }
 
+    // Highlight the possible moves
     public void highlightPossibleMoves(ArrayList<Position> possibleMoves, String player) {
         for (Position pos : possibleMoves) {
             int x = pos.getX();
@@ -351,6 +352,7 @@ public class GameView {
             square.setBackground(possibleMoveColor);
         }
     }
+    // Unhighlight the possible moves
     public void unhighlightPossibleMoves(ArrayList<Position> possibleMoves) {
         for (Position pos : possibleMoves) {
             int x = pos.getX();

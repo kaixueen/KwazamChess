@@ -124,22 +124,15 @@ public class GameController {
             return;
         }
 
-        // Add a delay before flipping the board
-        Timer timer = new Timer(800, e -> {
-            gameView.flipBoard(); // Flip the board after 1 second
-            if (gameBoard.getCurrentTurn() % 4 == 0) {
-                ArrayList<Position> transformedPieces = gameBoard.getTorXorPosition();
-                for (Position pos : transformedPieces) {
-                    gameBoard.transformPieceAt(pos);
-                    gameView.transformPieceAt(pos);
-                }
+        if (gameBoard.getCurrentTurn() % 4 == 0) {
+            ArrayList<Position> transformedPieces = gameBoard.getTorXorPosition();
+            for (Position pos : transformedPieces) {
+                gameBoard.transformPieceAt(pos);
+                gameView.transformPieceAt(pos);
             }
-            gameBoard.switchTurn();
-            gameView.updateTurn(gameBoard.getCurrentPlayer(), (gameBoard.getCurrentTurn() + 1) / 2);
-
-        });
-        timer.setRepeats(false); // Configure the timer
-        timer.start();           // Start the timer
+        }
+        gameBoard.switchTurn();
+        gameView.updateTurn(gameBoard.getCurrentPlayer(), (gameBoard.getCurrentTurn() + 1) / 2);gameView.flipBoard();
     }
 
     public void clearMoveListeners() {
