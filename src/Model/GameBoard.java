@@ -272,7 +272,7 @@ public class GameBoard {
             x = blueSauPosition.getX();
             y = blueSauPosition.getY();
         }
-        return !board[y][x].getType().equals("SAU");
+        return !board[y][x].getType().equals("SAU") || !board[y][x].getColor().equals(color);
     }
 
     // Determine the winner based on the win conditions
