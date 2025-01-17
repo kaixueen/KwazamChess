@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
 public class Tor extends Piece{
     // Constructor
     public Tor(String color, Position position) {

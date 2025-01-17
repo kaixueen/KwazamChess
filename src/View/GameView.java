@@ -12,9 +12,11 @@ import java.util.ArrayList;
 
 import static Util.Consts.*;
 
+// @author WOON WEN TAO, NG KAI XUEN
+// This class is responsible for the game view once user runs the program
 // Manage game GUI (board, pieces)
-public class GameView {
 
+public class GameView {
     private JFrame frame = new JFrame("Kwazam Chess");
     private JPanel headerPanel = new JPanel();
     private JPanel centerPanel = new JPanel();
@@ -30,6 +32,7 @@ public class GameView {
     private boolean isEnlarged;
     private Position enlargedPosition;
 
+    // @author WOON WEN TAO
     // Constructor
     public GameView() {
         frame.setVisible(true);
@@ -66,6 +69,7 @@ public class GameView {
         centerPanel.add(boardPanel, BorderLayout.CENTER);
         centerPanel.setBackground(Color.darkGray);
 
+        // Create the board with alternating colors
         for (int r = 0; r < ROWS; r++) {
             for (int c = 0; c < COLUMNS; c++) {
                 JButton square = new JButton();
@@ -92,6 +96,7 @@ public class GameView {
         menuWrapper.add(menu, BorderLayout.CENTER);
         footerPanel.add(menuWrapper, BorderLayout.WEST);
 
+        // Turn label
         turnNumberLabel = new JLabel("Turn: 1");
         turnNumberLabel.setFont(TURN_FONT);
         turnNumberLabel.setForeground(Color.WHITE);
@@ -110,6 +115,7 @@ public class GameView {
         initPosition();
     }
 
+    // @author WOON WEN TAO
     // Initialize the board with pieces
     public void initPosition() {
         turnLabel.setText("Now is Blue Turn!");
@@ -132,6 +138,7 @@ public class GameView {
         }
     }
 
+    // @author WOON WEN TAO
     // Set the icon of a button based on the description
     public void setIcon(JButton button, String description) {
         if (description.equals("null")) {
@@ -144,6 +151,7 @@ public class GameView {
         button.setActionCommand(description);
     }
 
+    // @author WOON WEN TAO
     // Move a piece from one position to another
     public void movePiece(Position from, Position to) {
         int fromX = from.getX();
@@ -157,6 +165,7 @@ public class GameView {
         setIcon(board[fromY][fromX], "null");
     }
 
+    // @author WOON WEN TAO
     // Flip the board
     public void flipBoard() {
         boardPanel.removeAll(); // Clear the board panel
@@ -184,12 +193,12 @@ public class GameView {
         boardPanel.revalidate(); // Refresh the layout
         boardPanel.repaint();    // Repaint the panel
     }
-
     // Check if the board is flipped
     public boolean isFlipped() {
         return isFlipped;
     }
 
+    // @author WOON WEN TAO
     // Rotate the icon of a button by 180 degrees
     public void rotateIcon(Position position){
         int x = position.getX();
@@ -213,6 +222,7 @@ public class GameView {
         board[y][x].setIcon(new ImageIcon(rotated));
     }
 
+    // @author WOON WEN TAO
     // Update the turn label
     public void updateTurn(String player, int turn) {
         turnLabel.setText("Now is " + player + " Turn!");
@@ -220,6 +230,7 @@ public class GameView {
         turnNumberLabel.setText("Turn: " + turn);
     }
 
+    // @author WOON WEN TAO
     // Clear the board
     public void clearBoard() {
         for (int i = 0; i < ROWS; i++) {
@@ -232,6 +243,7 @@ public class GameView {
         boardPanel.repaint();
     }
 
+    // @author NG KAI XUEN
     public void transformPieceAt(Position position) {
         int x = position.getX();
         int y = position.getY();
@@ -248,6 +260,7 @@ public class GameView {
         }
     }
 
+    // @author NG KAI XUEN
     // Find the position of a button
     public Position findButtonPosition(JButton btn) {
         for (int i = 0; i < 8; i++) {
@@ -260,6 +273,7 @@ public class GameView {
         return null;
     }
 
+    // @author NG KAI XUEN
     // Highlight the hovered piece
     public void pieceOnHover(Position position, String player) {
         int x = position.getX();
@@ -279,6 +293,8 @@ public class GameView {
             square.setBackground(new Color(168, 205, 137));
         }
     }
+
+    // @author WOON WEN TAO
     // Enlarge the clicked piece
     public void pieceOnClick(Position position) {
         int x = position.getX();
@@ -317,6 +333,7 @@ public class GameView {
         }
     }
 
+    // @author WOON WEN TAO
     // Add listeners to the piece
     public void addPieceListener(MouseAdapter listener) {
 
@@ -326,7 +343,6 @@ public class GameView {
             }
         }
     }
-
     // Remove listeners from the piece
     public void removePieceListener() {
         for (int i = 0; i < ROWS; i++) {
@@ -342,6 +358,7 @@ public class GameView {
         }
     }
 
+    // @author NG KAI XUEN
     // Highlight the possible moves
     public void highlightPossibleMoves(ArrayList<Position> possibleMoves, String player) {
         for (Position pos : possibleMoves) {
@@ -366,6 +383,8 @@ public class GameView {
         }
     }
 
+    // @author WOON WEN TAO
+    // Add listener to the possible moves of a selected piece
     public void addMoveListener(ArrayList<Position> positions, MouseAdapter newListener) {
         for (Position position : positions) {
             int x = position.getX();
@@ -380,8 +399,7 @@ public class GameView {
             button.addMouseListener(newListener);
         }
     }
-
-
+    // Remove listener from the possible moves of a selected piece
     public void removeMoveListener(ArrayList<Position> positions, MouseAdapter oriListener) {
         for (Position position : positions) {
             int x = position.getX();
@@ -397,16 +415,18 @@ public class GameView {
         }
     }
 
+    // @author WOON WEN TAO
     // Add listener to the menu button
     public void addMenuListener(ActionListener listener) {
         menu.addActionListener(listener);
     }
-
     public void clickMenu(ActionListener slistener, ActionListener llistener, ActionListener rlistener) {
         MenuView menu = new MenuView();
         menu.addButtonsListener(slistener, llistener, rlistener);
     }
 
+    // @author WOON WEN TAO
+    // Load the game state to the board
     public void loadGame(String[][] state) {
         clearBoard();
         for (int i = 0; i < ROWS; i++) {

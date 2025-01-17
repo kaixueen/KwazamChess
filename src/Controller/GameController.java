@@ -12,6 +12,7 @@ import javax.swing.*;
 
 import static Util.Consts.*;
 
+// @author TAN YEW WEN
 // Process user input and manage game states
 public class GameController {
     private GameView gameView;
@@ -19,6 +20,7 @@ public class GameController {
 
     private ArrayList<Position> possibleMoves;
 
+    // Constructor
     public GameController(GameView gameView, GameBoard gameBoard) {
         this.gameView = gameView;
         this.gameBoard = gameBoard;
@@ -27,6 +29,7 @@ public class GameController {
         gameView.addMenuListener(new MenuListener());
     }
 
+    // Inner class to handle piece selection when clicked
     private class PieceListener extends MouseAdapter {
         private GameController controller;
 
@@ -56,6 +59,7 @@ public class GameController {
         }
     }
 
+    // Handle piece selection
     public void handlePieceSelection(Position position) {
         Piece selectedPiece = gameBoard.getPieceAt(position);
         if (selectedPiece == null || !selectedPiece.getColor().equals(gameBoard.getCurrentPlayer())) {
@@ -85,6 +89,7 @@ public class GameController {
         }
     }
 
+    // Inner class to handle possible moves when a piece clicked
     private class MoveListener extends MouseAdapter {
         private GameController controller;
 
@@ -100,6 +105,7 @@ public class GameController {
         }
     }
 
+    // Handle piece movement
     public void handleMove(Position position) {
         Piece selectedPiece = gameBoard.getSelectedPieces().get(0);
         gameView.pieceOnClick(selectedPiece.getPosition());
@@ -135,19 +141,20 @@ public class GameController {
         gameView.updateTurn(gameBoard.getCurrentPlayer(), (gameBoard.getCurrentTurn() + 1) / 2);gameView.flipBoard();
     }
 
+    // Clear move listeners when a piece is unselected
     public void clearMoveListeners() {
         gameView.removeMoveListener(possibleMoves, new PieceListener(this));
         gameView.unhighlightPossibleMoves(possibleMoves);
     }
 
-
+    // Inner class to handle menu button clicks
     private class MenuListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameView.clickMenu(new SaveListener(), new LoadListener(), new RestartListener());
         }
     }
-
+    // Inner class to handle saving game
     private class SaveListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -167,7 +174,7 @@ public class GameController {
             SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
-
+    // Inner class to handle loading game
     private class LoadListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -204,7 +211,7 @@ public class GameController {
             SwingUtilities.getWindowAncestor((Component) e.getSource()).dispose();
         }
     }
-
+    // Inner class to handle restarting game
     private class RestartListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

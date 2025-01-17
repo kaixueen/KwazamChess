@@ -2,8 +2,10 @@ package Util;
 
 import java.awt.*;
 
-// Constants used in the game
+// @author NG KAI XUEN
+// This class contains all the constants used in the game for ease of access and modification
 public final class Consts {
+    // Constructor
     private Consts(){
         //this prevents even the native class from
         //calling this ctor as well :
@@ -27,6 +29,7 @@ public final class Consts {
     public static final Color BLUE_TURN_POSSIBLE_MOVE = new Color(205, 193, 255);
     public static final Color RED_TURN_POSSIBLE_MOVE = new Color(243, 158, 96);
 
+    // Image path that will changed according to the location of the image
     public static final String IMAGE_PATH="src/Images/";
 
     public static final Font TITLE_FONT = new Font("Lucida Calligraphy", Font.BOLD, 50);

@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN, NG KAI XUEN
 public class Ram extends Piece {
     // Constructor
     public Ram(String color, Position position) {

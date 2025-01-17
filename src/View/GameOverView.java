@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import static Util.Consts.*;
 
+// @author NG KAI XUEN
+// This class is responsible for the view after the game ends
 public class GameOverView extends JFrame {
     private JButton restartButton;
     private JPanel topPanel;

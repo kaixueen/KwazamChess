@@ -10,7 +10,10 @@ import java.io.IOException;
 
 import static Util.Consts.*;
 
-// Manage Menu GUI
+// @author NG KAI XUEN, WOON WEN TAO
+// This class is responsible for the menu view of the game
+// It displays the menu image and buttons for saving, loading and restarting the game
+
 public class MenuView extends JFrame {
     private JButton saveButton, loadButton, restartButton;
     private JPanel topPanel, bottomPanel;
@@ -52,9 +55,9 @@ public class MenuView extends JFrame {
         loadButton.setFont(MENU_FONT);
         restartButton.setFont(MENU_FONT);
 
-        saveButton.setBackground(new Color(102, 205, 170));   // Medium aquamarine
-        loadButton.setBackground(new Color(135, 206, 250));   // Sky blue
-        restartButton.setBackground(new Color(240, 128, 128)); // Light coral
+        saveButton.setBackground(new Color(102, 205, 170));
+        loadButton.setBackground(new Color(135, 206, 250));
+        restartButton.setBackground(new Color(240, 128, 128));
 
         saveButton.setForeground(Color.WHITE);
         loadButton.setForeground(Color.WHITE);
@@ -73,10 +76,10 @@ public class MenuView extends JFrame {
         add(topPanel, BorderLayout.CENTER);  // Image at the top
         add(bottomPanel, BorderLayout.SOUTH); // Buttons at the bottom
 
-        // Make the frame visible
         setVisible(true);
     }
 
+    // Add listeners to the buttons
     public void addButtonsListener(ActionListener sListener, ActionListener lListener, ActionListener rListener) {
         saveButton.addActionListener(sListener);
         loadButton.addActionListener(lListener);

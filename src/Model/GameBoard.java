@@ -5,6 +5,7 @@ import Util.Position;
 import java.util.ArrayList;
 import static Util.Consts.*;
 
+// @author NG KAI XUEN
 // Manage game board
 public class GameBoard {
     private PieceFactory factory;
@@ -17,6 +18,7 @@ public class GameBoard {
     private ArrayList<Piece> selectedPieces;
 
     // Singleton instance
+    // Ensure only one instance of GameBoard is created
     private static GameBoard instance;
     public static GameBoard getInstance() {
         if (instance != null) {
@@ -29,7 +31,6 @@ public class GameBoard {
         }
         return instance;
     }
-
     // Constructor
     private GameBoard() {
         board = new Piece[ROWS][COLUMNS];
@@ -54,7 +55,6 @@ public class GameBoard {
             board[0][col] = factory.createPiece(firstRowPieces[col], "RED", col, 0);
             board[ROWS - 1][col] = factory.createPiece(firstRowPieces[COLUMNS-col-1], "BLUE", col, ROWS - 1);
         }
-
         redSauPosition = new Position(2, 0);
         blueSauPosition = new Position(2, ROWS - 1);
         currentTurn = 1;
@@ -149,7 +149,7 @@ public class GameBoard {
         }
     }
 
-    // List all valid moves for a piece
+    // List all valid moves for a piece when clicked
     public ArrayList<Position> getPossibleMoves(Piece piece) {
         ArrayList<Position> validMoves = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
@@ -163,7 +163,7 @@ public class GameBoard {
         return validMoves;
     }
 
-    // Check if the straight path is blocked
+    // Check if the straight path is blocked (for handling movement)
     public boolean isStraightPathBlocked(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();
@@ -191,7 +191,7 @@ public class GameBoard {
         return false;
     }
 
-    // Check if the diagonal path is blocked
+    // Check if the diagonal path is blocked (for handling movement)
     public boolean isDiagonalPathBlocked(Position from, Position to) {
         int fromX = from.getX();
         int fromY = from.getY();

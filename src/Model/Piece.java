@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
 // Abstract class for all pieces
 public abstract class Piece {
     private String color;
@@ -15,12 +16,13 @@ public abstract class Piece {
         this.color = color;
         this.type = type;
         this.position = position;
-
         isMovingForward = true;
         isIconNeedToFlip = false;
     }
 
     // Determine if a piece can move to a certain position
+    // Abstract method to be implemented by subclasses
+    // Polymorphism
     public abstract boolean isValidMove(GameBoard board, Position to, String player);
 
     // Return a string representation of the piece

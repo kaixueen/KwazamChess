@@ -1,5 +1,6 @@
 package Util;
 
+// @author NG KAI XUEN
 // Position class to hold the x and y coordinates of a point
 public class Position {
     private int x;

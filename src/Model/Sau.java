@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
 public class Sau extends Piece {
     // Constructor
     public Sau(String color, Position position) {

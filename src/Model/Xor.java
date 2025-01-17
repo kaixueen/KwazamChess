@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
 public class Xor extends Piece {
     // Constructor
     public Xor(String color, Position position) {

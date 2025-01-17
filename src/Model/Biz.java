@@ -2,6 +2,7 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
 public class Biz extends Piece {
     // Constructor
     public Biz(String color, Position position) {

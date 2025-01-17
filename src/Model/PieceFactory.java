@@ -2,6 +2,8 @@ package Model;
 
 import Util.Position;
 
+// @author PHANG JUN YUAN
+// Factory pattern
 // Contain logic of piece creation
 public class PieceFactory {
     private static PieceFactory instance;

@@ -2,6 +2,7 @@ import Controller.GameController;
 import Model.GameBoard;
 import View.GameView;
 
+// @author NG KAI XUEN
 // Starting file
 public class KwazamChess {
     private GameBoard gameBoard;
