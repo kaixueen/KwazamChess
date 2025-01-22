@@ -1,7 +1,6 @@
 package Model;
 
-import Util.Position;
-
+import java.awt.*;
 import java.util.ArrayList;
 
 // @author NG KAI XUEN
@@ -12,7 +11,7 @@ public class GameBoard {
     private int currentTurn;
     private String currentPlayer;
     private boolean isGameOver;
-    private Position redSauPosition, blueSauPosition;
+    private Point redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
     private ArrayList<Piece> selectedPieces;
     public static final int ROWS = 8;
@@ -56,8 +55,8 @@ public class GameBoard {
             board[0][col] = factory.createPiece(firstRowPieces[col], "RED", col, 0);
             board[ROWS - 1][col] = factory.createPiece(firstRowPieces[COLUMNS-col-1], "BLUE", col, ROWS - 1);
         }
-        redSauPosition = new Position(2, 0);
-        blueSauPosition = new Position(2, ROWS - 1);
+        redSauPosition = new Point(2, 0);
+        blueSauPosition = new Point(2, ROWS - 1);
         currentTurn = 1;
         currentPlayer = "BLUE";
         isGameOver = false;
@@ -91,9 +90,9 @@ public class GameBoard {
     }
 
     // Get piece at a certain position
-    public Piece getPieceAt(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public Piece getPieceAt(Point position) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         if (isInBounds(x, y) && !isEmpty(x, y)) {
             return board[y][x];
         }
@@ -111,11 +110,11 @@ public class GameBoard {
         }
     }
     // Move piece to a certain position
-    public void movePieceTo(Position from, Position to) {
-        int fromX = from.getX();
-        int fromY = from.getY();
-        int toX = to.getX();
-        int toY = to.getY();
+    public void movePieceTo(Point from, Point to) {
+        int fromX = (int) from.getX();
+        int fromY = (int) from.getY();
+        int toX = (int) to.getX();
+        int toY = (int) to.getY();
         if (isInBounds(fromX, fromY) && isInBounds(toX, toY)) {
             Piece piece = getPieceAt(from);
             if (isEmpty(toX, toY) && piece != null) {
@@ -139,11 +138,11 @@ public class GameBoard {
         }
     }
     // Capture piece at a certain position
-    public void capturePiece(Position from, Position to) {
-        int fromX = from.getX();
-        int fromY = from.getY();
-        int toX = to.getX();
-        int toY = to.getY();
+    public void capturePiece(Point from, Point to) {
+        int fromX = (int) from.getX();
+        int fromY = (int) from.getY();
+        int toX = (int) to.getX();
+        int toY = (int) to.getY();
         if (isInBounds(fromX, fromY) && isInBounds(toX, toY)) {
             removePieceAt(toX, toY);
             movePieceTo(from, to);
@@ -151,13 +150,13 @@ public class GameBoard {
     }
 
     // List all valid moves for a piece when clicked
-    public ArrayList<Position> getPossibleMoves(Piece piece) {
-        ArrayList<Position> validMoves = new ArrayList<>();
+    public ArrayList<Point> getPossibleMoves(Piece piece) {
+        ArrayList<Point> validMoves = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
-                if (isInBounds(col, row) && piece.isValidMove(this, new Position(col, row), currentPlayer)) {
+                if (isInBounds(col, row) && piece.isValidMove(this, new Point(col, row), currentPlayer)) {
                     // Add to list of valid moves
-                    validMoves.add(new Position(col, row));
+                    validMoves.add(new Point(col, row));
                 }
             }
         }
@@ -165,11 +164,11 @@ public class GameBoard {
     }
 
     // Check if the straight path is blocked (for handling movement)
-    public boolean isStraightPathBlocked(Position from, Position to) {
-        int fromX = from.getX();
-        int fromY = from.getY();
-        int toX = to.getX();
-        int toY = to.getY();
+    public boolean isStraightPathBlocked(Point from, Point to) {
+        int fromX = (int) from.getX();
+        int fromY = (int) from.getY();
+        int toX = (int) to.getX();
+        int toY = (int) to.getY();
 
         // Horizontal movement (same row)
         if (fromY == toY) {
@@ -193,11 +192,11 @@ public class GameBoard {
     }
 
     // Check if the diagonal path is blocked (for handling movement)
-    public boolean isDiagonalPathBlocked(Position from, Position to) {
-        int fromX = from.getX();
-        int fromY = from.getY();
-        int toX = to.getX();
-        int toY = to.getY();
+    public boolean isDiagonalPathBlocked(Point from, Point to) {
+        int fromX = (int) from.getX();
+        int fromY = (int) from.getY();
+        int toX = (int) to.getX();
+        int toY = (int) to.getY();
 
         int stepX = (toX > fromX) ? 1 : -1; // Determine horizontal direction
         int stepY = (toY > fromY) ? 1 : -1; // Determine vertical direction
@@ -217,12 +216,12 @@ public class GameBoard {
 
     // Logic for transforming Tor and Xor pieces
     // Get all Tor and Xor pieces
-    public ArrayList<Position> getTorXorPosition() {
-        ArrayList<Position> transformedPieces = new ArrayList<>();
+    public ArrayList<Point> getTorXorPosition() {
+        ArrayList<Point> transformedPieces = new ArrayList<>();
         for (int row = 0; row < ROWS; row++) {
             for (int col = 0; col < COLUMNS; col++) {
                 if (board[row][col] != null && (board[row][col].getType().equals("TOR") || board[row][col].getType().equals("XOR"))) {
-                    transformedPieces.add(new Position(col, row));
+                    transformedPieces.add(new Point(col, row));
                 }
             }
         }
@@ -230,9 +229,9 @@ public class GameBoard {
     }
 
     // Tranform Tor and Xor pieces
-    public void transformPieceAt(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public void transformPieceAt(Point position) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         if (isInBounds(x, y)) {
             Piece piece = getPieceAt(position);
             if (piece.getType().equals("TOR")) {
@@ -255,7 +254,7 @@ public class GameBoard {
 
     // Logic for determining the winner
     // Keep track of Sau piece position
-    public void setSauPosition(Position position, String color) {
+    public void setSauPosition(Point position, String color) {
         if (color.equals("RED")) {
             redSauPosition = position;
         } else {
@@ -267,11 +266,11 @@ public class GameBoard {
     public boolean isSauCaptured(String color) {
         int x, y;
         if (color.equals("RED")) {
-            x = redSauPosition.getX();
-            y = redSauPosition.getY();
+            x = (int) redSauPosition.getX();
+            y = (int) redSauPosition.getY();
         } else {
-            x = blueSauPosition.getX();
-            y = blueSauPosition.getY();
+            x = (int) blueSauPosition.getX();
+            y = (int) blueSauPosition.getY();
         }
         return !board[y][x].getType().equals("SAU") || !board[y][x].getColor().equals(color);
     }
@@ -335,7 +334,7 @@ public class GameBoard {
                     String type = boardState[row][col].substring(1);
                     board[row][col] = factory.createPiece(type, color, col, row);
                     if (boardState[row][col].equals("RSAU") || boardState[row][col].equals("BSAU")) {
-                        setSauPosition(new Position(col, row), color);
+                        setSauPosition(new Point(col, row), color);
                     }
                 }
             }

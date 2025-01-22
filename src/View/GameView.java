@@ -1,7 +1,7 @@
 package View;
 
 import Model.GameBoard;
-import Util.Position;
+
 import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class GameView {
 
     private boolean isFlipped;
     private boolean isEnlarged;
-    private Position enlargedPosition;
+    private Point enlargedPosition;
 
     public static final String IMAGE_PATH = "/Images/";
 
@@ -123,7 +123,7 @@ public class GameView {
         turnLabel.setForeground(Color.BLUE);
         isFlipped = false;
         isEnlarged = false;
-        enlargedPosition = new Position(-1, -1);
+        enlargedPosition = new Point(-1, -1);
 
         // Initialize board with RAM pieces
         for (int col = 0; col < GameBoard.COLUMNS; col++) {
@@ -167,11 +167,11 @@ public class GameView {
 
     // @author WOON WEN TAO
     // Move a piece from one position to another
-    public void movePiece(Position from, Position to) {
-        int fromX = from.getX();
-        int fromY = from.getY();
-        int toX = to.getX();
-        int toY = to.getY();
+    public void movePiece(Point from, Point to) {
+        int fromX = (int) from.getX();
+        int fromY = (int) from.getY();
+        int toX = (int) to.getX();
+        int toY = (int) to.getY();
 
         board[toY][toX].setIcon(board[fromY][fromX].getIcon());
         board[toY][toX].setActionCommand(board[fromY][fromX].getActionCommand());
@@ -188,7 +188,7 @@ public class GameView {
             // Flip: Display bottom-to-top and right-to-left
             for (int r = GameBoard.ROWS-1; r >= 0; r--) {
                 for (int c = GameBoard.COLUMNS-1; c >= 0; c--) {
-                    rotateIcon(new Position(c, r));
+                    rotateIcon(new Point(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in flipped order
                 }
             }
@@ -197,7 +197,7 @@ public class GameView {
             // Restore: Display top-to-bottom and left-to-right
             for (int r = 0; r < GameBoard.ROWS; r++) {
                 for (int c = 0; c < GameBoard.COLUMNS; c++) {
-                    rotateIcon(new Position(c, r));
+                    rotateIcon(new Point(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in original order
                 }
             }
@@ -214,9 +214,9 @@ public class GameView {
 
     // @author WOON WEN TAO
     // Rotate the icon of a button by 180 degrees
-    public void rotateIcon(Position position){
-        int x = position.getX();
-        int y = position.getY();
+    public void rotateIcon(Point position){
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         ImageIcon icon = (ImageIcon) board[y][x].getIcon();;
         if (icon == null) {
             return;
@@ -258,9 +258,9 @@ public class GameView {
     }
 
     // @author NG KAI XUEN
-    public void transformPieceAt(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public void transformPieceAt(Point position) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         String icon = board[y][x].getActionCommand();
 
         if (icon.equals("RTOR")) {
@@ -276,11 +276,11 @@ public class GameView {
 
     // @author NG KAI XUEN
     // Find the position of a button
-    public Position findButtonPosition(JButton btn) {
+    public Point findButtonPosition(JButton btn) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 5; j++) {
                 if (board[i][j] == btn) {
-                    return new Position(j, i);
+                    return new Point(j, i);
                 }
             }
         }
@@ -289,17 +289,17 @@ public class GameView {
 
     // @author NG KAI XUEN
     // Highlight the hovered piece
-    public void pieceOnHover(Position position, String player) {
-        int x = position.getX();
-        int y = position.getY();
+    public void pieceOnHover(Point position, String player) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         JButton square = board[y][x];
         Color hoverColor = player.equals("RED") ? new Color(231, 142, 169) : new Color(64, 223, 239);
         square.setBackground(hoverColor);
     }
     // Unhighlight the hovered piece
-    public void pieceOffHover(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public void pieceOffHover(Point position) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         JButton square = board[y][x];
         if ((x + y) % 2 == 0) {
             square.setBackground(new Color(236, 235, 222));
@@ -310,14 +310,14 @@ public class GameView {
 
     // @author WOON WEN TAO
     // Enlarge the clicked piece
-    public void pieceOnClick(Position position) {
-        int x = position.getX();
-        int y = position.getY();
+    public void pieceOnClick(Point position) {
+        int x = (int) position.getX();
+        int y = (int) position.getY();
         JButton square = board[y][x];
 
         // Check if there's a previously enlarged button
         if (isEnlarged) {
-            JButton enlargedButton = board[enlargedPosition.getY()][enlargedPosition.getX()];
+            JButton enlargedButton = board[(int) enlargedPosition.getY()][(int) enlargedPosition.getX()];
             ImageIcon icon = (ImageIcon) enlargedButton.getIcon();
             if (icon != null) {
                 // Restore original size
@@ -329,8 +329,7 @@ public class GameView {
 
             // If clicking the same button, return without enlarging again
             if (enlargedPosition.getX() == x && enlargedPosition.getY() == y) {
-                enlargedPosition.setX(-1);
-                enlargedPosition.setY(-1);
+                enlargedPosition.setLocation(-1, -1);
                 return;
             }
         }
@@ -342,8 +341,7 @@ public class GameView {
             Image enlargedImage = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH); // Enlarge by 10px
             square.setIcon(new ImageIcon(enlargedImage));
             isEnlarged = true;
-            enlargedPosition.setX(x);
-            enlargedPosition.setY(y);
+            enlargedPosition.setLocation(x, y);
         }
     }
 
@@ -374,20 +372,20 @@ public class GameView {
 
     // @author NG KAI XUEN
     // Highlight the possible moves
-    public void highlightPossibleMoves(ArrayList<Position> possibleMoves, String player) {
-        for (Position pos : possibleMoves) {
-            int x = pos.getX();
-            int y = pos.getY();
+    public void highlightPossibleMoves(ArrayList<Point> possibleMoves, String player) {
+        for (Point pos : possibleMoves) {
+            int x = (int) pos.getX();
+            int y = (int) pos.getY();
             JButton square = board[y][x];
             Color possibleMoveColor = player.equals("RED") ? new Color(243, 158, 96) : new Color(205, 193, 255);
             square.setBackground(possibleMoveColor);
         }
     }
     // Unhighlight the possible moves
-    public void unhighlightPossibleMoves(ArrayList<Position> possibleMoves) {
-        for (Position pos : possibleMoves) {
-            int x = pos.getX();
-            int y = pos.getY();
+    public void unhighlightPossibleMoves(ArrayList<Point> possibleMoves) {
+        for (Point pos : possibleMoves) {
+            int x = (int) pos.getX();
+            int y = (int) pos.getY();
             JButton square = board[y][x];
             if ((x + y) % 2 == 0) {
                 square.setBackground(new Color(236, 235, 222));
@@ -399,10 +397,10 @@ public class GameView {
 
     // @author WOON WEN TAO
     // Add listener to the possible moves of a selected piece
-    public void addMoveListener(ArrayList<Position> positions, MouseAdapter newListener) {
-        for (Position position : positions) {
-            int x = position.getX();
-            int y = position.getY();
+    public void addMoveListener(ArrayList<Point> positions, MouseAdapter newListener) {
+        for (Point position : positions) {
+            int x = (int) position.getX();
+            int y = (int) position.getY();
             JButton button = board[y][x];
 
             // Remove all MoveListener instances
@@ -414,10 +412,10 @@ public class GameView {
         }
     }
     // Remove listener from the possible moves of a selected piece
-    public void removeMoveListener(ArrayList<Position> positions, MouseAdapter oriListener) {
-        for (Position position : positions) {
-            int x = position.getX();
-            int y = position.getY();
+    public void removeMoveListener(ArrayList<Point> positions, MouseAdapter oriListener) {
+        for (Point position : positions) {
+            int x = (int) position.getX();
+            int y = (int) position.getY();
             JButton button = board[y][x];
 
             // Remove all MoveListener instances

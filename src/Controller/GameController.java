@@ -1,7 +1,6 @@
 package Controller;
 
 import Model.*;
-import Util.Position;
 import View.*;
 
 import java.awt.*;
@@ -16,7 +15,7 @@ public class GameController {
     private GameView gameView;
     private GameBoard gameBoard;
 
-    private ArrayList<Position> possibleMoves;
+    private ArrayList<Point> possibleMoves;
 
     // Constructor
     public GameController(GameView gameView, GameBoard gameBoard) {
@@ -38,27 +37,27 @@ public class GameController {
         @Override
         public void mouseClicked(MouseEvent e) {
             JButton clickedButton = (JButton) e.getSource();
-            Position position = gameView.findButtonPosition(clickedButton);
+            Point position = gameView.findButtonPosition(clickedButton);
             controller.handlePieceSelection(position);
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
             JButton enteredButton = (JButton) e.getSource();
-            Position position = gameView.findButtonPosition(enteredButton);
+            Point position = gameView.findButtonPosition(enteredButton);
             gameView.pieceOnHover(position, gameBoard.getCurrentPlayer());
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
             JButton exitedButton = (JButton) e.getSource();
-            Position position = gameView.findButtonPosition(exitedButton);
+            Point position = gameView.findButtonPosition(exitedButton);
             gameView.pieceOffHover(position);
         }
     }
 
     // Handle piece selection
-    public void handlePieceSelection(Position position) {
+    public void handlePieceSelection(Point position) {
         Piece selectedPiece = gameBoard.getPieceAt(position);
         if (selectedPiece == null || !selectedPiece.getColor().equals(gameBoard.getCurrentPlayer())) {
             return;
@@ -98,17 +97,17 @@ public class GameController {
         @Override
         public void mouseClicked(MouseEvent e) {
             JButton clickedButton = (JButton) e.getSource();
-            Position position = gameView.findButtonPosition(clickedButton);
+            Point position = gameView.findButtonPosition(clickedButton);
             controller.handleMove(position);
         }
     }
 
     // Handle piece movement
-    public void handleMove(Position position) {
+    public void handleMove(Point position) {
         Piece selectedPiece = gameBoard.getSelectedPieces().get(0);
         gameView.pieceOnClick(selectedPiece.getPosition());
         gameView.movePiece(selectedPiece.getPosition(), position);
-        if (gameBoard.isEmpty(position.getX(), position.getY())) {
+        if (gameBoard.isEmpty((int) position.getX(), (int) position.getY())) {
             gameBoard.movePieceTo(selectedPiece.getPosition(), position);
         } else {
            gameBoard.capturePiece(selectedPiece.getPosition(), position);
@@ -129,8 +128,8 @@ public class GameController {
         }
 
         if (gameBoard.getCurrentTurn() % 4 == 0) {
-            ArrayList<Position> transformedPieces = gameBoard.getTorXorPosition();
-            for (Position pos : transformedPieces) {
+            ArrayList<Point> transformedPieces = gameBoard.getTorXorPosition();
+            for (Point pos : transformedPieces) {
                 gameBoard.transformPieceAt(pos);
                 gameView.transformPieceAt(pos);
             }
