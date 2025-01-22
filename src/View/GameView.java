@@ -1,16 +1,15 @@
 package View;
 
-
+import Model.GameBoard;
 import Util.Position;
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-
-import static Util.Consts.*;
 
 // @author WOON WEN TAO, NG KAI XUEN
 // This class is responsible for the game view once user runs the program
@@ -26,17 +25,19 @@ public class GameView {
     private JButton menu;
     private JLabel turnLabel;
     private JLabel turnNumberLabel;
-    private JButton[][] board = new JButton[ROWS][COLUMNS];
+    private JButton[][] board = new JButton[GameBoard.ROWS][GameBoard.COLUMNS];
 
     private boolean isFlipped;
     private boolean isEnlarged;
     private Position enlargedPosition;
 
+    public static final String IMAGE_PATH = "/Images/";
+
     // @author WOON WEN TAO
     // Constructor
     public GameView() {
         frame.setVisible(true);
-        frame.setSize(BOARD_WIDTH, BOARD_HEIGHT);
+        frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -45,13 +46,13 @@ public class GameView {
         JLabel textLabel = new JLabel();
         textLabel.setBackground(Color.BLACK);
         textLabel.setForeground(Color.WHITE);
-        textLabel.setFont(TITLE_FONT);
+        textLabel.setFont(new Font("Lucida Calligraphy", Font.BOLD, 50));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setText("Kwazam Chess");
         textLabel.setOpaque(true);
 
         headerPanel.setLayout(new BorderLayout());
-        headerPanel.setPreferredSize(new Dimension(BOARD_WIDTH, HEADER_HEIGHT));
+        headerPanel.setPreferredSize(new Dimension(800, 70));
         headerPanel.add(textLabel);
         frame.add(headerPanel, BorderLayout.NORTH);
 
@@ -62,16 +63,16 @@ public class GameView {
         frame.add(centerPanel, BorderLayout.CENTER);
 
         // Board Panel
-        boardPanel.setLayout(new GridLayout(ROWS, COLUMNS, 1, 1));
-        int buttonSize = 640 / ROWS; // Ensure buttons are square
-        boardPanel.setPreferredSize(new Dimension(buttonSize * COLUMNS - COLUMNS, buttonSize * ROWS - ROWS));
+        boardPanel.setLayout(new GridLayout(GameBoard.ROWS, GameBoard.COLUMNS, 1, 1));
+        int buttonSize = 640 / GameBoard.ROWS; // Ensure buttons are square
+        boardPanel.setPreferredSize(new Dimension(buttonSize * GameBoard.COLUMNS - GameBoard.COLUMNS, buttonSize * GameBoard.ROWS - GameBoard.ROWS));
         boardPanel.setBackground(Color.BLACK);
         centerPanel.add(boardPanel, BorderLayout.CENTER);
         centerPanel.setBackground(Color.darkGray);
 
         // Create the board with alternating colors
-        for (int r = 0; r < ROWS; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
+        for (int r = 0; r < GameBoard.ROWS; r++) {
+            for (int c = 0; c < GameBoard.COLUMNS; c++) {
                 JButton square = new JButton();
                 square.setPreferredSize(new Dimension(buttonSize, buttonSize));
                 if ((r + c) % 2 == 0) {
@@ -86,7 +87,7 @@ public class GameView {
 
         // Footer Panel
         menu = new JButton("Menu");
-        menu.setFont(MENU_FONT);
+        menu.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
         menu.setBackground(Color.WHITE);
 
         // To make the button has margin and not too close to the edge
@@ -98,17 +99,17 @@ public class GameView {
 
         // Turn label
         turnNumberLabel = new JLabel("Turn: 1");
-        turnNumberLabel.setFont(TURN_FONT);
+        turnNumberLabel.setFont(new Font("Lucida Calligraphy", Font.BOLD, 30));
         turnNumberLabel.setForeground(Color.WHITE);
         turnNumberLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         footerPanel.add(turnNumberLabel, BorderLayout.CENTER);
 
         turnLabel = new JLabel("Now is Blue Turn!");
         turnLabel.setForeground(Color.BLUE);
-        turnLabel.setFont(TURN_FONT);
+        turnLabel.setFont(new Font("Lucida Calligraphy", Font.BOLD, 30));
         turnLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         footerPanel.add(turnLabel, BorderLayout.EAST);
-        footerPanel.setPreferredSize(new Dimension(BOARD_WIDTH, FOOTER_HEIGHT));
+        footerPanel.setPreferredSize(new Dimension(800, 70));
         footerPanel.setBackground(Color.BLACK);
         frame.add(footerPanel, BorderLayout.SOUTH);
 
@@ -125,16 +126,16 @@ public class GameView {
         enlargedPosition = new Position(-1, -1);
 
         // Initialize board with RAM pieces
-        for (int col = 0; col < COLUMNS; col++) {
+        for (int col = 0; col < GameBoard.COLUMNS; col++) {
             setIcon(board[1][col], "RRAM");
-            setIcon(board[ROWS-2][col], "BRAM");
+            setIcon(board[GameBoard.ROWS-2][col], "BRAM");
         }
 
         // Initialize board with other pieces
         String[] firstRowPieces = "TOR BIZ SAU BIZ XOR".split(" ");
-        for (int col = 0; col < COLUMNS; col++) {
+        for (int col = 0; col < GameBoard.COLUMNS; col++) {
             setIcon(board[0][col], "R" + firstRowPieces[col]);
-            setIcon(board[ROWS-1][col], "B" + firstRowPieces[COLUMNS-col-1]);
+            setIcon(board[GameBoard.ROWS-1][col], "B" + firstRowPieces[GameBoard.COLUMNS-col-1]);
         }
     }
 
@@ -146,9 +147,22 @@ public class GameView {
             button.setActionCommand(null);
             return;
         }
-        ImageIcon icon = new ImageIcon(new ImageIcon(IMAGE_PATH + description + ".png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        button.setIcon(icon);
-        button.setActionCommand(description);
+        try {
+            // Load the image using ImageIO
+            Image image = ImageIO.read(getClass().getResource(IMAGE_PATH + description + ".png"));
+
+            // Scale the image
+            Image scaledImage = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(scaledImage);
+            button.setIcon(icon);
+            button.setActionCommand(description);
+        } catch (Exception e) {
+            System.out.println("Error loading image: " + description + ".png");
+        }
+
+//        ImageIcon icon = new ImageIcon(new ImageIcon(IMAGE_PATH + description + ".png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+//        button.setIcon(icon);
+//        button.setActionCommand(description);
     }
 
     // @author WOON WEN TAO
@@ -172,8 +186,8 @@ public class GameView {
 
         if (!isFlipped) {
             // Flip: Display bottom-to-top and right-to-left
-            for (int r = ROWS-1; r >= 0; r--) {
-                for (int c = COLUMNS-1; c >= 0; c--) {
+            for (int r = GameBoard.ROWS-1; r >= 0; r--) {
+                for (int c = GameBoard.COLUMNS-1; c >= 0; c--) {
                     rotateIcon(new Position(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in flipped order
                 }
@@ -181,8 +195,8 @@ public class GameView {
             isFlipped = true; // Mark board as flipped
         } else {
             // Restore: Display top-to-bottom and left-to-right
-            for (int r = 0; r < ROWS; r++) {
-                for (int c = 0; c < COLUMNS; c++) {
+            for (int r = 0; r < GameBoard.ROWS; r++) {
+                for (int c = 0; c < GameBoard.COLUMNS; c++) {
                     rotateIcon(new Position(c, r));
                     boardPanel.add(board[r][c]); // Add buttons in original order
                 }
@@ -233,8 +247,8 @@ public class GameView {
     // @author WOON WEN TAO
     // Clear the board
     public void clearBoard() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+        for (int i = 0; i < GameBoard.ROWS; i++) {
+            for (int j = 0; j < GameBoard.COLUMNS; j++) {
                 setIcon(board[i][j], "null");
             }
         }
@@ -279,7 +293,7 @@ public class GameView {
         int x = position.getX();
         int y = position.getY();
         JButton square = board[y][x];
-        Color hoverColor = player.equals("RED") ? RED_TURN_HOVER : BLUE_TURN_HOVER;
+        Color hoverColor = player.equals("RED") ? new Color(231, 142, 169) : new Color(64, 223, 239);
         square.setBackground(hoverColor);
     }
     // Unhighlight the hovered piece
@@ -337,16 +351,16 @@ public class GameView {
     // Add listeners to the piece
     public void addPieceListener(MouseAdapter listener) {
 
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+        for (int i = 0; i < GameBoard.ROWS; i++) {
+            for (int j = 0; j < GameBoard.COLUMNS; j++) {
                 board[i][j].addMouseListener(listener);
             }
         }
     }
     // Remove listeners from the piece
     public void removePieceListener() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+        for (int i = 0; i < GameBoard.ROWS; i++) {
+            for (int j = 0; j < GameBoard.COLUMNS; j++) {
                 JButton button = board[i][j];
                 // Iterate over all listeners attached to the button
                 for (MouseListener listener : button.getMouseListeners()) {
@@ -365,7 +379,7 @@ public class GameView {
             int x = pos.getX();
             int y = pos.getY();
             JButton square = board[y][x];
-            Color possibleMoveColor = player.equals("RED") ? RED_TURN_POSSIBLE_MOVE : BLUE_TURN_POSSIBLE_MOVE;
+            Color possibleMoveColor = player.equals("RED") ? new Color(243, 158, 96) : new Color(205, 193, 255);
             square.setBackground(possibleMoveColor);
         }
     }
@@ -429,8 +443,8 @@ public class GameView {
     // Load the game state to the board
     public void loadGame(String[][] state) {
         clearBoard();
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLUMNS; j++) {
+        for (int i = 0; i < GameBoard.ROWS; i++) {
+            for (int j = 0; j < GameBoard.COLUMNS; j++) {
                 if (state[i][j].equals("____")) {
                     setIcon(board[i][j], "null");
                 } else {

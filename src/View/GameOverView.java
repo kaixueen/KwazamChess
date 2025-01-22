@@ -5,10 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import static Util.Consts.*;
 
 // @author NG KAI XUEN
 // This class is responsible for the view after the game ends
@@ -40,7 +37,7 @@ public class GameOverView extends JFrame {
         // Add a winner label above the image
         winnerLabel = new JLabel();
         winnerLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        winnerLabel.setFont(TITLE_FONT);
+        winnerLabel.setFont(new Font("Lucida Calligraphy", Font.BOLD, 50));
         if (winner.equals("DRAW")) {
             winnerLabel.setText("It's a draw!");
         } else {
@@ -51,7 +48,8 @@ public class GameOverView extends JFrame {
 
         // Add image below the label
         try {
-            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + winner + ".jpg"));
+            BufferedImage image = ImageIO.read(getClass().getResource(GameView.IMAGE_PATH + winner + ".jpg"));
+//            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + winner + ".jpg"));
             Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
             picLabel = new JLabel(new ImageIcon(scaledImage));
             picLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -66,7 +64,7 @@ public class GameOverView extends JFrame {
         bottomPanel.setBackground(Color.WHITE);
 
         restartButton = new JButton("Restart");
-        restartButton.setFont(MENU_FONT);
+        restartButton.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
         restartButton.setBackground(Color.BLACK);
         restartButton.setForeground(Color.WHITE);
         restartButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

@@ -10,8 +10,6 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import static Util.Consts.*;
-
 // @author TAN YEW WEN
 // Process user input and manage game states
 public class GameController {
@@ -191,7 +189,7 @@ public class GameController {
                     gameView.removePieceListener();
 
                     int count = 0;
-                    String[][] gameState = new String[ROWS+2][COLUMNS];
+                    String[][] gameState = new String[GameBoard.ROWS+2][GameBoard.COLUMNS];
                     String line;
                     String pieces[];
                     while ((line = reader.readLine()) != null) {

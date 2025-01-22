@@ -3,7 +3,6 @@ package Model;
 import Util.Position;
 
 import java.util.ArrayList;
-import static Util.Consts.*;
 
 // @author NG KAI XUEN
 // Manage game board
@@ -16,6 +15,8 @@ public class GameBoard {
     private Position redSauPosition, blueSauPosition;
     private int remainingRedPieces, remainingBluePieces;
     private ArrayList<Piece> selectedPieces;
+    public static final int ROWS = 8;
+    public static final int COLUMNS = 5;
 
     // Singleton instance
     // Ensure only one instance of GameBoard is created
@@ -58,7 +59,7 @@ public class GameBoard {
         redSauPosition = new Position(2, 0);
         blueSauPosition = new Position(2, ROWS - 1);
         currentTurn = 1;
-        currentPlayer = PLAYER1;
+        currentPlayer = "BLUE";
         isGameOver = false;
     }
 
@@ -278,7 +279,8 @@ public class GameBoard {
     // Determine the winner based on the win conditions
     public String determineWinConditions() {
         isGameOver = true;
-        if (currentTurn >= TURN_LIMIT) {
+        // Check if the game has reached the turn limit (100/2 = 50 turns)
+        if (currentTurn >= 100) {
             if (remainingRedPieces > remainingBluePieces) {
                 return "RED";
             } else if (remainingBluePieces > remainingRedPieces) {
@@ -299,7 +301,7 @@ public class GameBoard {
 
     // Switch turns between players
     public void switchTurn() {
-        currentPlayer = currentPlayer.equals(PLAYER1) ? PLAYER2 : PLAYER1;
+        currentPlayer = currentPlayer.equals("BLUE") ? "RED" : "BLUE";
         currentTurn++;
     }
 

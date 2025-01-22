@@ -5,10 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import static Util.Consts.*;
 
 // @author NG KAI XUEN, WOON WEN TAO
 // This class is responsible for the menu view of the game
@@ -33,7 +30,8 @@ public class MenuView extends JFrame {
 
         // Add image to top panel
         try {
-            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + "MENU.jpg"));
+            BufferedImage image = ImageIO.read(getClass().getResource(GameView.IMAGE_PATH + "MENU.jpg"));
+//            BufferedImage image = ImageIO.read(new File(IMAGE_PATH + "MENU.jpg"));
             Image scaledImage = image.getScaledInstance(300, 150, Image.SCALE_SMOOTH); // Resize to fit
             JLabel picLabel = new JLabel(new ImageIcon(scaledImage));
             topPanel.add(picLabel);
@@ -51,9 +49,9 @@ public class MenuView extends JFrame {
         loadButton = new JButton("Load");
         restartButton = new JButton("Restart");
 
-        saveButton.setFont(MENU_FONT);
-        loadButton.setFont(MENU_FONT);
-        restartButton.setFont(MENU_FONT);
+        saveButton.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
+        loadButton.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
+        restartButton.setFont(new Font("Lucida Calligraphy", Font.BOLD, 20));
 
         saveButton.setBackground(new Color(102, 205, 170));
         loadButton.setBackground(new Color(135, 206, 250));
