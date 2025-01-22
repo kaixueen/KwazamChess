@@ -16,16 +16,11 @@ import java.util.ArrayList;
 // Manage game GUI (board, pieces)
 
 public class GameView {
-    private JFrame frame = new JFrame("Kwazam Chess");
-    private JPanel headerPanel = new JPanel();
-    private JPanel centerPanel = new JPanel();
-    private JPanel boardPanel = new JPanel();
-    private JPanel footerPanel = new JPanel(new BorderLayout());
-
+    private JFrame frame;
+    private JPanel headerPanel, centerPanel, boardPanel, footerPanel;
     private JButton menu;
-    private JLabel turnLabel;
-    private JLabel turnNumberLabel;
-    private JButton[][] board = new JButton[GameBoard.ROWS][GameBoard.COLUMNS];
+    private JLabel turnLabel, turnNumberLabel;
+    private JButton[][] board;
 
     private boolean isFlipped;
     private boolean isEnlarged;
@@ -36,6 +31,13 @@ public class GameView {
     // @author WOON WEN TAO
     // Constructor
     public GameView() {
+        frame = new JFrame("Kwazam Chess");
+        headerPanel = new JPanel();
+        centerPanel = new JPanel();
+        boardPanel = new JPanel();
+        footerPanel = new JPanel(new BorderLayout());
+        board = new JButton[GameBoard.ROWS][GameBoard.COLUMNS];
+
         frame.setVisible(true);
         frame.setSize(800, 800);
         frame.setLocationRelativeTo(null);
